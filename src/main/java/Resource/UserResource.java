@@ -19,6 +19,12 @@ public class UserResource {
         this.userService = userService;
     }
 
+    /**
+     * Authenticated de user.
+     * @param userDTO de gegevens om mee in te loggen.
+     * @return Een Response met de authenticated user
+     * @throws RestException
+     */
     @Path("/login")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -31,4 +37,5 @@ public class UserResource {
                 throw new RestException("Could not authenticate. " + e);
             }
     }
+
 }
