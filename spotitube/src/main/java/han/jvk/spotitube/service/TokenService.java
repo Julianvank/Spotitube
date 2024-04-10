@@ -2,14 +2,15 @@ package han.jvk.spotitube.service;
 
 import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.UserDTO;
-import han.jvk.spotitube.exception.ServiceException;
+import han.jvk.spotitube.dto.exception.ServiceException;
 import han.jvk.spotitube.persistance.ITokenDAO;
-import han.jvk.spotitube.util.TokenUtil;
 import han.jvk.spotitube.util.factory.ITokenFactory;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.net.HttpURLConnection;
 
+@ApplicationScoped
 public class TokenService implements ITokenService{
 
     private ITokenDAO tokenDAO;
@@ -36,9 +37,9 @@ public class TokenService implements ITokenService{
 
     @Override
     public AuthenticatedUserDTO generateAuthenticatedUserDTO(UserDTO userDTO) {
-        AuthenticatedUserDTO uathDTO = new AuthenticatedUserDTO(userDTO.getUsername(), tokenFactory.generateToken());
+        AuthenticatedUserDTO authDTO = new AuthenticatedUserDTO(userDTO.getUsername(), tokenFactory.generateToken());
 
-        tokenDAO.saveAuthenticatedUser(uathDTO);
-        return uathDTO;
+        tokenDAO.saveAuthenticatedUser(authDTO);
+        return authDTO;
     }
 }

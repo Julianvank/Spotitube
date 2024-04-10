@@ -1,4 +1,4 @@
-package han.jvk.spotitube.exception;
+package han.jvk.spotitube.dto.exception;
 
 public class ServiceException extends APIException {
 

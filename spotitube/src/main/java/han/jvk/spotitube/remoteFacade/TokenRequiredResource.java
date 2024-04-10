@@ -1,8 +1,8 @@
 package han.jvk.spotitube.remoteFacade;
 
 import han.jvk.spotitube.dto.AuthenticatedUserDTO;
-import han.jvk.spotitube.exception.RestException;
-import han.jvk.spotitube.exception.ServiceException;
+import han.jvk.spotitube.dto.exception.RestException;
+import han.jvk.spotitube.dto.exception.ServiceException;
 import han.jvk.spotitube.service.ITokenService;
 import jakarta.inject.Inject;
 

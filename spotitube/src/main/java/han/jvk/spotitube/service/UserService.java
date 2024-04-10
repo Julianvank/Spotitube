@@ -4,15 +4,17 @@ import java.net.HttpURLConnection;
 
 import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.UserDTO;
-import han.jvk.spotitube.exception.PersistanceException;
-import han.jvk.spotitube.exception.ServiceException;
+import han.jvk.spotitube.dto.exception.PersistanceException;
+import han.jvk.spotitube.dto.exception.ServiceException;
 import han.jvk.spotitube.persistance.IUserDAO;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-public class UserService implements IUserService{
+@ApplicationScoped
+public class UserService implements IUserService {
 
-    ITokenService tokenService;
-    IUserDAO userDAO;
+    private ITokenService tokenService;
+    private IUserDAO userDAO;
 
     @Inject
     public void setTokenService(ITokenService tokenService) {
@@ -20,7 +22,9 @@ public class UserService implements IUserService{
     }
 
     @Inject
-    public void setUserDAO(IUserDAO userDAO){this.userDAO = userDAO;}
+    public void setUserDAO(IUserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
 
     @Override
     public AuthenticatedUserDTO getUserToken(UserDTO user) throws ServiceException {
@@ -30,10 +34,7 @@ public class UserService implements IUserService{
 
     private void authenticate(UserDTO user) throws ServiceException {
         try {
-            if (user.getUsername().equals(userDAO.getPasswordByUser(user.getUsername(), user.getPassword()))) {
-                System.out.println("User logged in");
-            } else {
-                System.out.println("Incorrect login");
+            if (!user.getPassword().equals(userDAO.getPasswordByUser(user.getUsername()))) {
                 throw new ServiceException("Authentication failed; invalid login.", HttpURLConnection.HTTP_BAD_REQUEST);
             }
         } catch (PersistanceException e) {

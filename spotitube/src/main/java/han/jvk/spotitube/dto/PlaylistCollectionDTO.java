@@ -1,5 +1,6 @@
 package han.jvk.spotitube.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PlaylistCollectionDTO {
@@ -9,6 +10,10 @@ public class PlaylistCollectionDTO {
     public PlaylistCollectionDTO(List<PlaylistDTO> playlists, int length) {
         this.playlists = playlists;
         this.length = length;
+    }
+
+    public PlaylistCollectionDTO(){
+        this.playlists = new ArrayList<>();
     }
 
     public List<PlaylistDTO> getPlaylists() {
@@ -25,5 +30,9 @@ public class PlaylistCollectionDTO {
 
     public void setLength(int length) {
         this.length = length;
+    }
+
+    public void putPlaylist(PlaylistDTO playlistDTO){
+        playlists.add(playlistDTO);
     }
 }

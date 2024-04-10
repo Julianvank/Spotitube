@@ -1,4 +1,4 @@
-package han.jvk.spotitube.exception;
+package han.jvk.spotitube.dto.exception;
 
 
 public class APIException extends Exception{
@@ -22,6 +22,7 @@ public class APIException extends Exception{
 
     public APIException(String message, Throwable cause) {
         super(message.concat(" Cause: " + cause.getMessage()), cause);
+
         elabHttpStatusCode(cause);
     }
 
