@@ -26,6 +26,10 @@ public class TrackDTO {
 
     private TrackDTO(){}
 
+    public TrackDTO(int duration){
+        this.duration = duration;
+    }
+
     public int getId() {
         return id;
     }

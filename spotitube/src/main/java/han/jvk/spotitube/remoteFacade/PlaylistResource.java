@@ -3,8 +3,8 @@ package han.jvk.spotitube.remoteFacade;
 import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.PlaylistDTO;
 import han.jvk.spotitube.dto.TrackDTO;
-import han.jvk.spotitube.dto.exception.RestException;
-import han.jvk.spotitube.dto.exception.ServiceException;
+import han.jvk.spotitube.exception.RestException;
+import han.jvk.spotitube.exception.ServiceException;
 import han.jvk.spotitube.service.IPlaylistService;
 import han.jvk.spotitube.service.ITrackService;
 import jakarta.inject.Inject;
@@ -37,13 +37,6 @@ public class PlaylistResource extends TokenRequiredResource {
         return getAllPlaylistResponse(authUser);
     }
 
-//    @GET
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response getPlaylist(@QueryParam("token") final String token, int id) throws RestException {
-//        AuthenticatedUserDTO authUser = validateToken(token);
-//        return Response.ok(playlistService.getPlaylist(authUser, id)).build();
-//    }
-
     @Path("/:{id}")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
@@ -69,7 +62,7 @@ public class PlaylistResource extends TokenRequiredResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response editPlaylist(@QueryParam("token") final String token, @PathParam("id") final int id, PlaylistDTO playlistDTO) throws RestException {
         AuthenticatedUserDTO authUser = createAuthUser(token);
-        playlistService.editPlaylist(authUser, playlistDTO);
+        playlistService.editPlaylist(playlistDTO, id);
         return getAllPlaylistResponse(authUser);
     }
 
@@ -88,10 +81,10 @@ public class PlaylistResource extends TokenRequiredResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addTrackToPlaylist(@QueryParam("token") final String token, @PathParam("id") final int id, TrackDTO trackDTO) throws RestException {
+    public Response addTrackToPlaylist(@QueryParam("token") final String token, @PathParam("id") final int playlistId, TrackDTO trackDTO) throws RestException {
         AuthenticatedUserDTO authUser = createAuthUser(token);
-        trackService.addTrackToPlaylist(authUser, id, trackDTO);
-        return getAllTracksResponse(id, authUser);
+        trackService.addTrackToPlaylist(playlistId, trackDTO);
+        return getAllTracksResponse(playlistId, authUser);
     }
 
     @Path("/:{id}/tracks/:{trackId}")
@@ -104,11 +97,11 @@ public class PlaylistResource extends TokenRequiredResource {
     }
 
 
-    private Response getAllPlaylistResponse(AuthenticatedUserDTO authUser) {
+    private Response getAllPlaylistResponse(AuthenticatedUserDTO authUser) throws RestException {
         try {
             return Response.ok(playlistService.getAllPlaylist(authUser)).build();
         } catch (ServiceException e) {
-            throw new RuntimeException(e);
+            throw new RestException(e);
         }
     }
 

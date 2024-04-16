@@ -1,4 +1,4 @@
-package han.jvk.spotitube.dto.exception;
+package han.jvk.spotitube.exception;
 
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;

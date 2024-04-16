@@ -13,7 +13,7 @@ public interface IPlaylistDAO {
 
     void addPlaylist(String username, PlaylistDTO playlistDTO);
 
-    void editPlaylist(String username, PlaylistDTO playlistDTO);
+    void editPlaylist(PlaylistDTO playlistDTO, int id);
 
     PlaylistDTO getPlaylist(AuthenticatedUserDTO authUser, int id);
 

@@ -4,7 +4,7 @@ import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.PlaylistCollectionDTO;
 import han.jvk.spotitube.dto.PlaylistDTO;
 import han.jvk.spotitube.dto.TrackDTO;
-import han.jvk.spotitube.dto.exception.ServiceException;
+import han.jvk.spotitube.exception.ServiceException;
 import han.jvk.spotitube.persistance.IPlaylistDAO;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -29,9 +29,10 @@ public class PlaylistService implements IPlaylistService {
     @Override
     public PlaylistCollectionDTO getAllPlaylist(AuthenticatedUserDTO authUser) throws ServiceException {
         PlaylistCollectionDTO collection = new PlaylistCollectionDTO();
-        List<PlaylistDTO> list = playlistDAO.getAllPlaylist(authUser.getUsername());
+        List<PlaylistDTO> list;
+        list = playlistDAO.getAllPlaylist(authUser.getUsername());
 
-        if(collection.getPlaylists().isEmpty()){
+        if(list.isEmpty()){
             throw new ServiceException("There are no playlist", HttpURLConnection.HTTP_NO_CONTENT);
         }
 
@@ -67,8 +68,8 @@ public class PlaylistService implements IPlaylistService {
     }
 
     @Override
-    public void editPlaylist(AuthenticatedUserDTO authUser, PlaylistDTO playlistDTO) {
-        playlistDAO.editPlaylist(authUser.getUsername(), playlistDTO);
+    public void editPlaylist(PlaylistDTO playlistDTO, int id) {
+        playlistDAO.editPlaylist(playlistDTO, id);
     }
 
     private int getLength(List<PlaylistDTO> playlists){

@@ -22,17 +22,17 @@ public class TrackService implements ITrackService{
     }
 
     @Override
-    public void getAvailableTracks(AuthenticatedUserDTO authUser, int id) {
-
+    public List<TrackDTO> getAvailableTracks(AuthenticatedUserDTO authUser, int id) {
+        return trackDAO.getAvailableTracks(id);
     }
 
     @Override
-    public void addTrackToPlaylist(AuthenticatedUserDTO authUser, int id, TrackDTO trackDTO) {
-
+    public void addTrackToPlaylist(int id, TrackDTO trackDTO) {
+        trackDAO.addTrackToPlaylist(trackDTO, id);
     }
 
     @Override
     public void removeTrackFromPlaylist(AuthenticatedUserDTO authUser, int id, int trackId) {
-
+        trackDAO.removeTrackFromPlaylist(trackId, id);
     }
 }

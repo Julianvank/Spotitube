@@ -1,4 +1,4 @@
-package han.jvk.spotitube.persistance.local;
+package han.jvk.spotitube.persistance.postgreSQL;
 
 import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.persistance.ITokenDAO;
@@ -59,7 +59,6 @@ public class TokenDAO extends PostgresConnector implements ITokenDAO {
             while (rs.next()) {
                 user = rs.getString(1);
             }
-            System.out.println("User = " + user);
             return user;
 
         } catch (SQLException e){

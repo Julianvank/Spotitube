@@ -1,4 +1,4 @@
-package han.jvk.spotitube.persistance.local;
+package han.jvk.spotitube.persistance.postgreSQL;
 
 import han.jvk.spotitube.persistance.IUserDAO;
 import han.jvk.spotitube.persistance.postgreSQL.PostgresConnector;
@@ -27,6 +27,7 @@ public class UserDAO extends PostgresConnector implements IUserDAO {
                 password = rs.getString(1);
             }
             return password;
+
         } catch (SQLException e) {
             e.printStackTrace();
             return password;

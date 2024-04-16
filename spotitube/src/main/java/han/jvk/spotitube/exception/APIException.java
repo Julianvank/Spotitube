@@ -1,7 +1,7 @@
-package han.jvk.spotitube.dto.exception;
+package han.jvk.spotitube.exception;
 
 
-public class APIException extends Exception{
+public abstract class APIException extends Exception{
 
     private Integer httpStatusCode;
 

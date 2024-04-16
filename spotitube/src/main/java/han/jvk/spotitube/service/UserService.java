@@ -4,8 +4,8 @@ import java.net.HttpURLConnection;
 
 import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.UserDTO;
-import han.jvk.spotitube.dto.exception.PersistanceException;
-import han.jvk.spotitube.dto.exception.ServiceException;
+import han.jvk.spotitube.exception.PersistanceException;
+import han.jvk.spotitube.exception.ServiceException;
 import han.jvk.spotitube.persistance.IUserDAO;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -39,7 +39,7 @@ public class UserService implements IUserService {
             }
         } catch (PersistanceException e) {
             e.printStackTrace();
-            throw new ServiceException("Authentication failed; invalid login.", HttpURLConnection.HTTP_BAD_REQUEST);
+            throw new ServiceException("Authentication failed; Could not retrieve data.", HttpURLConnection.HTTP_BAD_REQUEST);
         }
     }
 }

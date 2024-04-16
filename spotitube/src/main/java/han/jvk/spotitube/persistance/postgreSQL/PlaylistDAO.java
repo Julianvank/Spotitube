@@ -4,6 +4,7 @@ import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.PlaylistDTO;
 import han.jvk.spotitube.dto.TrackDTO;
 import han.jvk.spotitube.persistance.IPlaylistDAO;
+import han.jvk.spotitube.persistance.dataMapper.PlaylistMapper;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.sql.*;
@@ -12,9 +13,8 @@ import java.util.List;
 
 @ApplicationScoped
 public class PlaylistDAO extends PostgresConnector implements IPlaylistDAO {
+    PlaylistMapper playlistMapper = new PlaylistMapper();
 
-
-    List<PlaylistDTO> playlist = new ArrayList<>();
 
     @Override
     public List<PlaylistDTO> getAllPlaylist(String owner) {
@@ -33,10 +33,7 @@ public class PlaylistDAO extends PostgresConnector implements IPlaylistDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                PlaylistDTO playlist = new PlaylistDTO(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getString("owner"));
+                PlaylistDTO playlist = playlistMapper.mapResultSetToPlaylistDTO(rs);
                 list.add(playlist);
             }
 
@@ -44,11 +41,6 @@ public class PlaylistDAO extends PostgresConnector implements IPlaylistDAO {
             e.printStackTrace();
         }
 
-        for (PlaylistDTO playlistDTO : playlist) {
-            if (playlistDTO.getOwner().equals(owner)) {
-                list.add(playlistDTO);
-            }
-        }
         return list;
     }
 
@@ -57,9 +49,8 @@ public class PlaylistDAO extends PostgresConnector implements IPlaylistDAO {
         final String querie = "SELECT id, name ((SELECT name FROM users WHERE name LIKE ?)) AS owner\n" +
                 "FROM playlists\n" +
                 "WHERE id = ?";
+
         PlaylistDTO playlist = new PlaylistDTO();
-
-
         try (Connection conn = connect()) {
             PreparedStatement stmt = conn.prepareStatement(querie);
 
@@ -68,12 +59,12 @@ public class PlaylistDAO extends PostgresConnector implements IPlaylistDAO {
 
             ResultSet rs = stmt.executeQuery(querie);
 
+
             while (rs.next()) {
-                playlist.setId(rs.getInt("id"));
-                playlist.setName(rs.getString("name"));
-                playlist.setOwner(rs.getString("owner"));
+                playlist = playlistMapper.mapResultSetToPlaylistDTO(rs);
             }
 
+            return playlist;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -120,6 +111,8 @@ public class PlaylistDAO extends PostgresConnector implements IPlaylistDAO {
 
             stmt.setString(1, playlistDTO.getName());
             stmt.setString(2, username);
+
+            stmt.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -137,6 +130,8 @@ public class PlaylistDAO extends PostgresConnector implements IPlaylistDAO {
 
                 stmt.setInt(1, track.getId());
                 stmt.setInt(2, id);
+
+                stmt.executeQuery();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -144,7 +139,18 @@ public class PlaylistDAO extends PostgresConnector implements IPlaylistDAO {
     }
 
     @Override
-    public void editPlaylist(String username, PlaylistDTO playlistDTO) {
+    public void editPlaylist(PlaylistDTO playlistDTO, int id) {
+        final String query = "UPDATE playlists SET name = ? WHERE owner = id";
+
+        try (Connection conn = connect()) {
+            PreparedStatement stmt = conn.prepareStatement(query);
+
+            stmt.setString(1, playlistDTO.getName());
+
+            stmt.executeQuery();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
 
     }
 }

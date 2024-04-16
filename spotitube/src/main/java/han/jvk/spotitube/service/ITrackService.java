@@ -8,9 +8,9 @@ import java.util.List;
 public interface ITrackService {
     List<TrackDTO> getAllTracksFromPlaylist(AuthenticatedUserDTO authUser, int id);
 
-    void getAvailableTracks(AuthenticatedUserDTO authUser, int id);
+    List<TrackDTO> getAvailableTracks(AuthenticatedUserDTO authUser, int id);
 
-    void addTrackToPlaylist(AuthenticatedUserDTO authUser, int id, TrackDTO trackDTO);
+    void addTrackToPlaylist(int id, TrackDTO trackDTO);
 
     void removeTrackFromPlaylist(AuthenticatedUserDTO authUser, int id, int trackId);
 }

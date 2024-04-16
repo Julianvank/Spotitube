@@ -2,8 +2,8 @@ package han.jvk.spotitube.service;
 
 import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.UserDTO;
-import han.jvk.spotitube.dto.exception.PersistanceException;
-import han.jvk.spotitube.dto.exception.ServiceException;
+import han.jvk.spotitube.exception.PersistanceException;
+import han.jvk.spotitube.exception.ServiceException;
 import han.jvk.spotitube.persistance.IUserDAO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +15,7 @@ import java.net.HttpURLConnection;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -32,8 +33,14 @@ class UserServiceTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
+
+    /**
+     * Test to verify correct beviour
+     * @throws PersistanceException
+     * @throws ServiceException
+     */
     @Test
-    public void testGetUserToken_Success() throws PersistanceException, ServiceException {
+    void testGetUserToken_Success() throws PersistanceException, ServiceException {
         // Arrange
         UserDTO user = new UserDTO("username", "password", 1);
         AuthenticatedUserDTO expectedAuthenticatedUserDTO = new AuthenticatedUserDTO("username", "token");
@@ -50,12 +57,17 @@ class UserServiceTest {
         verify(tokenService).generateAuthenticatedUserDTO(user);
     }
 
+
+    /**
+     * Test to verify wrong password handeling
+     * @throws PersistanceException
+     */
     @Test
-    public void testGetUserToken_AuthenticationFailed() throws PersistanceException {
+    void testGetUserToken_AuthenticationFailed() throws PersistanceException {
         // Arrange
         UserDTO user = new UserDTO("username", "password", 1);
 
-        when(userDAO.getPasswordByUser("username")).thenThrow(new PersistanceException());
+        when(userDAO.getPasswordByUser("username")).thenReturn("notPassword");
 
         // Act
         ServiceException exception = org.junit.jupiter.api.Assertions.assertThrows(
@@ -68,21 +80,26 @@ class UserServiceTest {
         assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, exception.getHttpStatusCode());
     }
 
+    /**
+     * Test to verify PersistanceException handeling.
+     * @throws PersistanceException
+     */
     @Test
-    public void testGetUserToken_InvalidPassword() throws PersistanceException {
+    void testGetUserToken_AuthenticationAssertThrowsPersistance() throws PersistanceException {
         // Arrange
-        UserDTO user = new UserDTO("username", "wrong_password",1);
+        UserDTO user = new UserDTO("username", "password", 1);
 
-        // Mock behavior of userDAO to return a password
-        when(userDAO.getPasswordByUser("username")).thenReturn("password");
+        when(userDAO.getPasswordByUser(anyString())).thenThrow(PersistanceException.class);
 
-        // Act & Assert
+        // Act
         ServiceException exception = org.junit.jupiter.api.Assertions.assertThrows(
                 ServiceException.class,
                 () -> userService.getUserToken(user)
         );
 
-        assertEquals("Authentication failed; invalid login.", exception.getMessage());
+        //Assert
+        assertEquals("Authentication failed; Could not retrieve data.", exception.getMessage());
         assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, exception.getHttpStatusCode());
     }
+
 }
