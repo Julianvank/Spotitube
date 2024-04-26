@@ -14,6 +14,8 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.util.List;
+
 @Path("/playlists")
 public class PlaylistResource extends TokenRequiredResource {
 
@@ -83,7 +85,12 @@ public class PlaylistResource extends TokenRequiredResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response addTrackToPlaylist(@QueryParam("token") final String token, @PathParam("id") final int playlistId, TrackDTO trackDTO) throws RestException {
         AuthenticatedUserDTO authUser = createAuthUser(token);
-        trackService.addTrackToPlaylist(playlistId, trackDTO);
+        try {
+            trackService.addTrackToPlaylist(playlistId, trackDTO);
+        } catch (ServiceException e) {
+            e.printStackTrace();
+            throw new RestException("Unable to add Track.", e);
+        }
         return getAllTracksResponse(playlistId, authUser);
     }
 

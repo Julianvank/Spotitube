@@ -15,12 +15,6 @@ public class UserResource {
 
     private IUserService userService;
 
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response UserHealth() throws RestException {
-        return Response.ok("healthy").build();
-    }
-
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

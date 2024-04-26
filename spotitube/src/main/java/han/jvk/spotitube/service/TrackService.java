@@ -2,10 +2,12 @@ package han.jvk.spotitube.service;
 
 import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.TrackDTO;
+import han.jvk.spotitube.exception.ServiceException;
 import han.jvk.spotitube.persistance.ITrackDAO;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+import java.net.HttpURLConnection;
 import java.util.List;
 
 @ApplicationScoped
@@ -27,7 +29,8 @@ public class TrackService implements ITrackService{
     }
 
     @Override
-    public void addTrackToPlaylist(int id, TrackDTO trackDTO) {
+    public void addTrackToPlaylist(int id, TrackDTO trackDTO) throws ServiceException {
+        if(!trackDAO.lookUpTrack(trackDTO)) throw new ServiceException("Track is not in database", HttpURLConnection.HTTP_NOT_FOUND);
         trackDAO.addTrackToPlaylist(trackDTO, id);
     }
 

@@ -21,7 +21,7 @@ public class TrackDAO extends PostgresConnector implements ITrackDAO {
                 "WHERE playlist_id = ?;";
         List<TrackDTO> tracks = new ArrayList<>();
 
-        try (Connection conn = connect()){
+        try (Connection conn = connect()) {
             PreparedStatement stmt = conn.prepareStatement(query);
 
             stmt.setInt(1, id);
@@ -35,7 +35,7 @@ public class TrackDAO extends PostgresConnector implements ITrackDAO {
 
             return tracks;
 
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -48,7 +48,7 @@ public class TrackDAO extends PostgresConnector implements ITrackDAO {
                 "FROM tracks t RIGHT OUTER JOIN tracksinplaylist tip on t.id = tip.track_id where available = true";
         List<TrackDTO> tracks = new ArrayList<>();
 
-        try (Connection conn = connect()){
+        try (Connection conn = connect()) {
             Statement stmt = conn.createStatement();
 
             ResultSet rs = stmt.executeQuery(query);
@@ -59,7 +59,7 @@ public class TrackDAO extends PostgresConnector implements ITrackDAO {
             }
             return tracks;
 
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -69,17 +69,18 @@ public class TrackDAO extends PostgresConnector implements ITrackDAO {
     @Override
     public void addTrackToPlaylist(TrackDTO trackDTO, int id) {
         final String query = "INSERT INTO tracksInPlaylist (TRACK_ID, PLAYLIST_ID)\n" +
-                "VALUES (?, ?),";
+                "VALUES (?, ?)";
 
-        try (Connection conn = connect()){
+        try (Connection conn = connect()) {
             PreparedStatement stmt = conn.prepareStatement(query);
 
-            stmt.setInt(1, id);
-            stmt.setInt(2, trackDTO.getId());
+            stmt.setInt(1, trackDTO.getId());
+            stmt.setInt(2, id);
 
-            stmt.executeQuery();
 
-        } catch (SQLException e){
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -88,7 +89,7 @@ public class TrackDAO extends PostgresConnector implements ITrackDAO {
     public void removeTrackFromPlaylist(int trackId, int id) {
         final String query = "DELETE FROM tracksInPlaylist WHERE PLAYLIST_ID = ? AND TRACK_ID = ?";
 
-        try (Connection conn = connect()){
+        try (Connection conn = connect()) {
             PreparedStatement stmt = conn.prepareStatement(query);
 
             stmt.setInt(1, id);
@@ -96,7 +97,32 @@ public class TrackDAO extends PostgresConnector implements ITrackDAO {
 
             stmt.executeQuery();
 
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
-        }    }
+        }
+    }
+
+    @Override
+    public boolean lookUpTrack(TrackDTO trackDTO) {
+        final String query = "SELECT COUNT(ID) FROM tracks WHERE ID = ?";
+
+        try (Connection conn = connect()) {
+            PreparedStatement stmt = conn.prepareStatement(query);
+
+            stmt.setInt(1, trackDTO.getId());
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                if(rs.getInt(1) > 0){
+                    return true;
+                }
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

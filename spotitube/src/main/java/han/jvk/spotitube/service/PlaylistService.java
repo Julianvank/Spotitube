@@ -45,7 +45,7 @@ public class PlaylistService implements IPlaylistService {
 
     private void addAllTracksToList(AuthenticatedUserDTO authUser, List<PlaylistDTO> list, PlaylistCollectionDTO collection) {
         for(PlaylistDTO playlist : list){
-            playlist.setTrack(trackService.getAllTracksFromPlaylist(authUser, playlist.getId()));
+            playlist.setTracks(trackService.getAllTracksFromPlaylist(authUser, playlist.getId()));
         }
 
         collection.setPlaylists(list);

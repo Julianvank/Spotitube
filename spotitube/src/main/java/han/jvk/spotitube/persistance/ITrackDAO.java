@@ -14,4 +14,6 @@ public interface ITrackDAO {
     void addTrackToPlaylist(TrackDTO trackDTO, int id);
 
     void removeTrackFromPlaylist(int trackId, int id);
+
+    boolean lookUpTrack(TrackDTO trackDTO);
 }

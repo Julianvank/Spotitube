@@ -24,7 +24,7 @@ public class TrackDTO {
         this.offlineAvailable = offlineAvailable;
     }
 
-    private TrackDTO(){}
+    public TrackDTO(){}
 
     public TrackDTO(int duration){
         this.duration = duration;
@@ -100,5 +100,20 @@ public class TrackDTO {
 
     public void setOfflineAvailable(boolean offlineAvailable) {
         this.offlineAvailable = offlineAvailable;
+    }
+
+    @Override
+    public String toString() {
+        return "TrackDTO{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", performer='" + performer + '\'' +
+                ", duration=" + duration +
+                ", album='" + album + '\'' +
+                ", playcount=" + playcount +
+                ", publicationDate='" + publicationDate + '\'' +
+                ", description='" + description + '\'' +
+                ", offlineAvailable=" + offlineAvailable +
+                '}';
     }
 }

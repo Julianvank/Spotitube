@@ -47,8 +47,6 @@ public class TokenDAO extends PostgresConnector implements ITokenDAO {
 
         String user = null;
 
-        System.out.println(token);
-
         try (Connection conn = connect()) {
             PreparedStatement stmt = conn.prepareStatement(query);
 

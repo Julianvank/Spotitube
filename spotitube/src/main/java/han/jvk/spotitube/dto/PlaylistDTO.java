@@ -8,17 +8,16 @@ public class PlaylistDTO {
     private int id;
     private String name;
     private String owner;
-    private List<TrackDTO> tracks;
+    private List<TrackDTO> tracks = new ArrayList<>();
 
-    public PlaylistDTO(int id, String name, String owner) {
-        tracks = new ArrayList<>();
+    public PlaylistDTO() {
+    }
+
+    public PlaylistDTO(int id, String name, String owner, List<TrackDTO> tracks) {
         this.name = name;
         this.owner = owner;
         this.id = id;
-    }
-
-    public PlaylistDTO(){
-
+        this.tracks = tracks;
     }
 
     public int getId() {
@@ -45,16 +44,16 @@ public class PlaylistDTO {
         this.owner = owner;
     }
 
-    public void putTrack(TrackDTO trackDTO){
+    public void putTrack(TrackDTO trackDTO) {
         tracks.add(trackDTO);
     }
 
-    public List<TrackDTO> getTracks(){
+    public List<TrackDTO> getTracks() {
         return tracks;
     }
 
-    public void setTrack(List<TrackDTO> list){
-        this.tracks = list;
+    public void setTracks(List<TrackDTO> tracks) {
+        this.tracks = tracks;
     }
 
 }

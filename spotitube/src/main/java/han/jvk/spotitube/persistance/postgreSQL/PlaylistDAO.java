@@ -107,21 +107,31 @@ public class PlaylistDAO extends PostgresConnector implements IPlaylistDAO {
 
 
         try (Connection conn = connect()) {
-            PreparedStatement stmt = conn.prepareStatement(playlistQuery);
+            PreparedStatement stmt = conn.prepareStatement(playlistQuery, Statement.RETURN_GENERATED_KEYS);
 
             stmt.setString(1, playlistDTO.getName());
             stmt.setString(2, username);
 
-            stmt.executeQuery();
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Creating playlist failed, no rows affected.");
+            }
+
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int id = generatedKeys.getInt(1);
+                    playlistDTO.setId(id);
+                } else {
+                    throw new SQLException("Creating playlist failed, no ID obtained.");
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
     }
 
     @Override
-    public void addTracksToPlaylist(String username, List<TrackDTO> tracks, int id) {
+    public void addTracksToPlaylist(String username, List<TrackDTO> tracks, int playlistId) {
         final String trackQuery = "INSERT INTO tracksInPlaylist (TRACK_ID, PLAYLIST_ID)\n" +
                 "VALUES (?, ?);";
         try (Connection conn = connect()) {
@@ -129,9 +139,9 @@ public class PlaylistDAO extends PostgresConnector implements IPlaylistDAO {
                 PreparedStatement stmt = conn.prepareStatement(trackQuery);
 
                 stmt.setInt(1, track.getId());
-                stmt.setInt(2, id);
+                stmt.setInt(2, playlistId);
 
-                stmt.executeQuery();
+                stmt.executeUpdate();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -140,14 +150,14 @@ public class PlaylistDAO extends PostgresConnector implements IPlaylistDAO {
 
     @Override
     public void editPlaylist(PlaylistDTO playlistDTO, int id) {
-        final String query = "UPDATE playlists SET name = ? WHERE owner = id";
+        final String query = "UPDATE playlists SET name = ? WHERE ID = id";
 
         try (Connection conn = connect()) {
             PreparedStatement stmt = conn.prepareStatement(query);
 
             stmt.setString(1, playlistDTO.getName());
 
-            stmt.executeQuery();
+            stmt.executeUpdate();
         } catch (SQLException e){
             e.printStackTrace();
         }

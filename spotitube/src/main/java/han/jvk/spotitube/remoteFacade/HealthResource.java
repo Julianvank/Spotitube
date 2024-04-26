@@ -2,6 +2,8 @@ package han.jvk.spotitube.remoteFacade;
 
 
 
+import han.jvk.spotitube.dto.HealthDTO;
+import han.jvk.spotitube.dto.TrackDTO;
 import han.jvk.spotitube.service.IHealthService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -32,4 +34,13 @@ public class HealthResource {
         return Response.ok(string).build();
     }
 
+    @Path("/test")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response checkArray(HealthDTO healthDTO){
+        for (TrackDTO string : healthDTO.getTracks()) {
+            System.out.println("The string to return is: " + string.toString());
+        }
+        return Response.ok().build();
+    }
 }

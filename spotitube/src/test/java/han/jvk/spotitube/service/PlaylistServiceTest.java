@@ -63,11 +63,11 @@ class PlaylistServiceTest {
 
         PlaylistDTO playlist1 = new PlaylistDTO();
         playlist1.setName("Playlist 1");
-        playlist1.setTrack(tracks);
+        playlist1.setTracks(tracks);
 
         PlaylistDTO playlist2 = new PlaylistDTO();
         playlist2.setName("Playlist 2");
-        playlist2.setTrack(tracks);
+        playlist2.setTracks(tracks);
 
         List<PlaylistDTO> playlists = new ArrayList<>();
         playlists.add(playlist1);
