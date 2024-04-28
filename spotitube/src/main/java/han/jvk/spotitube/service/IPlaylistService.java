@@ -8,11 +8,11 @@ import han.jvk.spotitube.exception.ServiceException;
 public interface IPlaylistService {
     PlaylistCollectionDTO getAllPlaylist(AuthenticatedUserDTO authUser) throws ServiceException;
 
-    void deletePlaylistById(AuthenticatedUserDTO authUser, int id);
+    void deletePlaylistById(AuthenticatedUserDTO authUser, int id) throws ServiceException;
 
-    void addPlaylist(AuthenticatedUserDTO authUser, PlaylistDTO playlistDTO);
+    void addPlaylist(AuthenticatedUserDTO authUser, PlaylistDTO playlistDTO) throws ServiceException;
 
-    void editPlaylist(PlaylistDTO playlistDTO, int id);
+    void editPlaylist(PlaylistDTO playlistDTO, int id) throws ServiceException;
 
-    PlaylistDTO getPlaylist(AuthenticatedUserDTO authUser, int id);
+    PlaylistDTO getPlaylist(AuthenticatedUserDTO authUser, int id) throws ServiceException;
 }

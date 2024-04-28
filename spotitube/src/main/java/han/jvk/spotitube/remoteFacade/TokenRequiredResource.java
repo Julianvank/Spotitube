@@ -6,8 +6,10 @@ import han.jvk.spotitube.exception.ServiceException;
 import han.jvk.spotitube.service.ITokenService;
 import jakarta.inject.Inject;
 
+import org.jboss.logging.Logger;
 
 public abstract class TokenRequiredResource {
+
 
     private ITokenService tokenService;
 
@@ -20,7 +22,6 @@ public abstract class TokenRequiredResource {
         try {
             return tokenService.getAuthenticatedUserDTOByToken(token);
         } catch (ServiceException e) {
-            e.printStackTrace();
             throw new RestException("This resource requires a token.", e);
         }
     }

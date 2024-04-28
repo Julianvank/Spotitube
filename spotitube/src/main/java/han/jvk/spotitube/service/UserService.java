@@ -4,14 +4,18 @@ import java.net.HttpURLConnection;
 
 import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.UserDTO;
-import han.jvk.spotitube.exception.PersistanceException;
+import han.jvk.spotitube.exception.DALException;
 import han.jvk.spotitube.exception.ServiceException;
 import han.jvk.spotitube.persistance.IUserDAO;
+import han.jvk.spotitube.remoteFacade.TokenRequiredResource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.jboss.logging.Logger;
 
 @ApplicationScoped
 public class UserService implements IUserService {
+
+    private static final Logger log = Logger.getLogger(TokenRequiredResource.class.getName());
 
     private ITokenService tokenService;
     private IUserDAO userDAO;
@@ -35,11 +39,10 @@ public class UserService implements IUserService {
     private void authenticate(UserDTO user) throws ServiceException {
         try {
             if (!user.getPassword().equals(userDAO.getPasswordByUser(user.getUsername()))) {
-                throw new ServiceException("Authentication failed; invalid login.", HttpURLConnection.HTTP_BAD_REQUEST);
+                throw new ServiceException("invalid login.", HttpURLConnection.HTTP_FORBIDDEN);
             }
-        } catch (PersistanceException e) {
-            e.printStackTrace();
-            throw new ServiceException("Authentication failed; Could not retrieve data.", HttpURLConnection.HTTP_BAD_REQUEST);
+        } catch (DALException e) {
+            throw new ServiceException("Could not retrieve data.", HttpURLConnection.HTTP_UNAVAILABLE);
         }
     }
 }

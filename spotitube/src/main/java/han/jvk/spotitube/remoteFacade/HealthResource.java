@@ -5,6 +5,7 @@ package han.jvk.spotitube.remoteFacade;
 import han.jvk.spotitube.dto.HealthDTO;
 import han.jvk.spotitube.dto.TrackDTO;
 import han.jvk.spotitube.service.IHealthService;
+import han.jvk.spotitube.util.factory.DBConnection.IDBConnectionFactory;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -19,6 +20,13 @@ public class HealthResource {
 
     @Inject
     public void setHealthService(IHealthService healthService){this.healthService = healthService;}
+
+    private IDBConnectionFactory connector;
+
+    @Inject
+    public void setConnector(IDBConnectionFactory connector){
+        this.connector = connector;
+    }
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
@@ -42,5 +50,13 @@ public class HealthResource {
             System.out.println("The string to return is: " + string.toString());
         }
         return Response.ok().build();
+    }
+
+    @Path("/change")
+    @POST
+    @Consumes(MediaType.TEXT_PLAIN)
+    public Response changeDatabase(String database){
+        connector.setProperties(database);
+        return Response.ok(database).build();
     }
 }

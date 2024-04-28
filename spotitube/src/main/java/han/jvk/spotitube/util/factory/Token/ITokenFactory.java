@@ -1,4 +1,4 @@
-package han.jvk.spotitube.util.factory;
+package han.jvk.spotitube.util.factory.Token;
 
 public interface ITokenFactory {
 

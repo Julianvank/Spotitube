@@ -1,4 +1,4 @@
-package han.jvk.spotitube.util.factory;
+package han.jvk.spotitube.util.factory.Token;
 
 import han.jvk.spotitube.util.TokenUtil;
 import han.jvk.spotitube.util.adapter.TokenFactoryAdapter;

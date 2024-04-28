@@ -2,7 +2,7 @@ package han.jvk.spotitube.service;
 
 import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.UserDTO;
-import han.jvk.spotitube.exception.PersistanceException;
+import han.jvk.spotitube.exception.DALException;
 import han.jvk.spotitube.exception.ServiceException;
 import han.jvk.spotitube.persistance.IUserDAO;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,11 +36,11 @@ class UserServiceTest {
 
     /**
      * Test to verify correct beviour
-     * @throws PersistanceException
+     * @throws DALException
      * @throws ServiceException
      */
     @Test
-    void testGetUserToken_Success() throws PersistanceException, ServiceException {
+    void testGetUserToken_Success() throws DALException, ServiceException {
         // Arrange
         UserDTO user = new UserDTO("username", "password", 1);
         AuthenticatedUserDTO expectedAuthenticatedUserDTO = new AuthenticatedUserDTO("username", "token");
@@ -60,10 +60,10 @@ class UserServiceTest {
 
     /**
      * Test to verify wrong password handeling
-     * @throws PersistanceException
+     * @throws DALException
      */
     @Test
-    void testGetUserToken_AuthenticationFailed() throws PersistanceException {
+    void testGetUserToken_AuthenticationFailed() throws DALException {
         // Arrange
         UserDTO user = new UserDTO("username", "password", 1);
 
@@ -82,14 +82,14 @@ class UserServiceTest {
 
     /**
      * Test to verify PersistanceException handeling.
-     * @throws PersistanceException
+     * @throws DALException
      */
     @Test
-    void testGetUserToken_AuthenticationAssertThrowsPersistance() throws PersistanceException {
+    void testGetUserToken_AuthenticationAssertThrowsPersistance() throws DALException {
         // Arrange
         UserDTO user = new UserDTO("username", "password", 1);
 
-        when(userDAO.getPasswordByUser(anyString())).thenThrow(PersistanceException.class);
+        when(userDAO.getPasswordByUser(anyString())).thenThrow(DALException.class);
 
         // Act
         ServiceException exception = org.junit.jupiter.api.Assertions.assertThrows(

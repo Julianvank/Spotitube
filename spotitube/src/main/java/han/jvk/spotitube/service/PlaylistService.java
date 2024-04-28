@@ -4,16 +4,20 @@ import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.PlaylistCollectionDTO;
 import han.jvk.spotitube.dto.PlaylistDTO;
 import han.jvk.spotitube.dto.TrackDTO;
+import han.jvk.spotitube.exception.DALException;
 import han.jvk.spotitube.exception.ServiceException;
 import han.jvk.spotitube.persistance.IPlaylistDAO;
+import han.jvk.spotitube.remoteFacade.TokenRequiredResource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.jboss.logging.Logger;
 
 import java.net.HttpURLConnection;
 import java.util.List;
 
 @ApplicationScoped
 public class PlaylistService implements IPlaylistService {
+
 
     IPlaylistDAO playlistDAO;
     ITrackService trackService;
@@ -30,10 +34,14 @@ public class PlaylistService implements IPlaylistService {
     public PlaylistCollectionDTO getAllPlaylist(AuthenticatedUserDTO authUser) throws ServiceException {
         PlaylistCollectionDTO collection = new PlaylistCollectionDTO();
         List<PlaylistDTO> list;
-        list = playlistDAO.getAllPlaylist(authUser.getUsername());
+        try {
+            list = playlistDAO.getAllPlaylist(authUser.getUsername());
+        } catch (DALException e) {
+            throw new ServiceException(e, HttpURLConnection.HTTP_INTERNAL_ERROR);
+        }
 
         if(list.isEmpty()){
-            throw new ServiceException("There are no playlist", HttpURLConnection.HTTP_NO_CONTENT);
+            throw new ServiceException("There are no playlist", HttpURLConnection.HTTP_CONFLICT);
         }
 
         addAllTracksToList(authUser, list, collection);
@@ -52,24 +60,40 @@ public class PlaylistService implements IPlaylistService {
     }
 
     @Override
-    public PlaylistDTO getPlaylist(AuthenticatedUserDTO authUser, int id) {
-        return playlistDAO.getPlaylist(authUser, id);
+    public PlaylistDTO getPlaylist(AuthenticatedUserDTO authUser, int id) throws ServiceException {
+        try {
+            return playlistDAO.getPlaylist(authUser, id);
+        } catch (DALException e) {
+            throw new ServiceException(e, HttpURLConnection.HTTP_INTERNAL_ERROR);
+        }
     }
 
     @Override
-    public void deletePlaylistById(AuthenticatedUserDTO authUser, int id) {
-        playlistDAO.deletePlaylistById(authUser.getUsername(), id);
+    public void deletePlaylistById(AuthenticatedUserDTO authUser, int id) throws ServiceException {
+        try {
+            playlistDAO.deletePlaylistById(authUser.getUsername(), id);
+        } catch (DALException e) {
+            throw new ServiceException(e);
+        }
     }
 
     @Override
-    public void addPlaylist(AuthenticatedUserDTO authUser, PlaylistDTO playlistDTO) {
-        playlistDAO.addPlaylist(authUser.getUsername(), playlistDTO);
-        playlistDAO.addTracksToPlaylist(authUser.getUsername(), playlistDTO.getTracks(), playlistDTO.getId());
+    public void addPlaylist(AuthenticatedUserDTO authUser, PlaylistDTO playlistDTO) throws ServiceException {
+        try {
+            playlistDAO.addPlaylist(authUser.getUsername(), playlistDTO);
+            playlistDAO.addTracksToPlaylist(authUser.getUsername(), playlistDTO.getTracks(), playlistDTO.getId());
+        } catch (DALException e) {
+            throw new ServiceException(e, HttpURLConnection.HTTP_CONFLICT);
+        }
     }
 
     @Override
-    public void editPlaylist(PlaylistDTO playlistDTO, int id) {
-        playlistDAO.editPlaylist(playlistDTO, id);
+    public void editPlaylist(PlaylistDTO playlistDTO, int id) throws ServiceException {
+        try {
+            playlistDAO.editPlaylist(playlistDTO, id);
+        } catch (DALException e) {
+            throw new ServiceException(e, HttpURLConnection.HTTP_INTERNAL_ERROR);
+        }
     }
 
     private int getLength(List<PlaylistDTO> playlists){

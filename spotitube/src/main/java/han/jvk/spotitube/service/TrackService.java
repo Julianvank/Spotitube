@@ -30,7 +30,7 @@ public class TrackService implements ITrackService{
 
     @Override
     public void addTrackToPlaylist(int id, TrackDTO trackDTO) throws ServiceException {
-        if(!trackDAO.lookUpTrack(trackDTO)) throw new ServiceException("Track is not in database", HttpURLConnection.HTTP_NOT_FOUND);
+        if(!trackDAO.lookUpTrack(trackDTO)) throw new ServiceException("Track is not in database", HttpURLConnection.HTTP_CONFLICT);
         trackDAO.addTrackToPlaylist(trackDTO, id);
     }
 

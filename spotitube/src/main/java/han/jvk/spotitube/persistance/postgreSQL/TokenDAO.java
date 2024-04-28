@@ -2,7 +2,7 @@ package han.jvk.spotitube.persistance.postgreSQL;
 
 import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.persistance.ITokenDAO;
-import han.jvk.spotitube.persistance.postgreSQL.PostgresConnector;
+import han.jvk.spotitube.util.DBPropertiesReader;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.sql.Connection;
@@ -11,16 +11,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @ApplicationScoped
 public class TokenDAO extends PostgresConnector implements ITokenDAO {
 
     private static final Map<String, String> userTokenStorage = new HashMap<>();
-
-    public TokenDAO(){
-        userTokenStorage.put("test", "Admin");
-    }
 
 //    @Override
 //    public String findUserByToken(String givenToken) {

@@ -1,8 +1,11 @@
 package han.jvk.spotitube.persistance.postgreSQL;
 
+import han.jvk.spotitube.exception.DALException;
+import han.jvk.spotitube.util.factory.DBConnection.IDBConnectionFactory;
 import han.jvk.spotitube.persistance.IUserDAO;
-import han.jvk.spotitube.persistance.postgreSQL.PostgresConnector;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,8 +14,10 @@ import java.sql.SQLException;
 
 @ApplicationScoped
 public class UserDAO extends PostgresConnector implements IUserDAO {
+
+
     @Override
-    public String getPasswordByUser(String username) {
+    public String getPasswordByUser(String username) throws DALException {
         final String querie = "SELECT password FROM users WHERE username = ?";
         String password = "";
 
@@ -29,8 +34,7 @@ public class UserDAO extends PostgresConnector implements IUserDAO {
             return password;
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            return password;
+            throw new DALException("A problem was found while fulfilling the database request.", e);
         }
     }
 }

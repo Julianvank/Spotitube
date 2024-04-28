@@ -1,6 +1,7 @@
 package han.jvk.spotitube.persistance.postgreSQL;
 
 import han.jvk.spotitube.dto.TrackDTO;
+import han.jvk.spotitube.exception.DALException;
 import han.jvk.spotitube.persistance.ITrackDAO;
 import han.jvk.spotitube.persistance.dataMapper.TrackMapper;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -13,9 +14,10 @@ import java.util.List;
 public class TrackDAO extends PostgresConnector implements ITrackDAO {
 
     TrackMapper trackMapper = new TrackMapper();
+    
 
     @Override
-    public List<TrackDTO> getAllTrackInPlaylist(int id) {
+    public List<TrackDTO> getAllTrackInPlaylist(int id) throws DALException {
         final String query = "SELECT t.id, t.title, t.performer, t.duration, t.album, t.playcount, t.publication_date, t.description, t.offline_available\n" +
                 "FROM tracksinplaylist tip LEFT JOIN public.tracks t on t.id = tip.track_id\n" +
                 "WHERE playlist_id = ?;";
@@ -36,14 +38,13 @@ public class TrackDAO extends PostgresConnector implements ITrackDAO {
             return tracks;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DALException("A problem was found while fulfilling the database request.", e);
         }
 
-        return null;
     }
 
     @Override
-    public List<TrackDTO> getAvailableTracks(int id) {
+    public List<TrackDTO> getAvailableTracks(int id) throws DALException {
         final String query = "SELECT t.id, t.title, t.performer, t.duration, t.album, t.playcount, t.publication_date, t.description, t.offline_available\n" +
                 "FROM tracks t RIGHT OUTER JOIN tracksinplaylist tip on t.id = tip.track_id where available = true";
         List<TrackDTO> tracks = new ArrayList<>();
@@ -60,14 +61,12 @@ public class TrackDAO extends PostgresConnector implements ITrackDAO {
             return tracks;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DALException("A problem was found while fulfilling the database request.", e);
         }
-
-        return null;
     }
 
     @Override
-    public void addTrackToPlaylist(TrackDTO trackDTO, int id) {
+    public void addTrackToPlaylist(TrackDTO trackDTO, int id) throws DALException {
         final String query = "INSERT INTO tracksInPlaylist (TRACK_ID, PLAYLIST_ID)\n" +
                 "VALUES (?, ?)";
 
@@ -81,12 +80,12 @@ public class TrackDAO extends PostgresConnector implements ITrackDAO {
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DALException("A problem was found while fulfilling the database request.", e);
         }
     }
 
     @Override
-    public void removeTrackFromPlaylist(int trackId, int id) {
+    public void removeTrackFromPlaylist(int trackId, int id) throws DALException {
         final String query = "DELETE FROM tracksInPlaylist WHERE PLAYLIST_ID = ? AND TRACK_ID = ?";
 
         try (Connection conn = connect()) {
@@ -95,15 +94,15 @@ public class TrackDAO extends PostgresConnector implements ITrackDAO {
             stmt.setInt(1, id);
             stmt.setInt(2, trackId);
 
-            stmt.executeQuery();
+            stmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DALException("A problem was found while fulfilling the database request.", e);
         }
     }
 
     @Override
-    public boolean lookUpTrack(TrackDTO trackDTO) {
+    public boolean lookUpTrack(TrackDTO trackDTO) throws DALException {
         final String query = "SELECT COUNT(ID) FROM tracks WHERE ID = ?";
 
         try (Connection conn = connect()) {
@@ -121,7 +120,7 @@ public class TrackDAO extends PostgresConnector implements ITrackDAO {
 
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DALException("A problem was found while fulfilling the database request.", e);
         }
         return false;
     }

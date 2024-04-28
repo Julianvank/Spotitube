@@ -4,6 +4,7 @@ import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.PlaylistCollectionDTO;
 import han.jvk.spotitube.dto.PlaylistDTO;
 import han.jvk.spotitube.dto.TrackDTO;
+import han.jvk.spotitube.exception.DALException;
 import han.jvk.spotitube.exception.ServiceException;
 import han.jvk.spotitube.persistance.IPlaylistDAO;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +43,7 @@ class PlaylistServiceTest {
     }
 
     @Test
-    void getAllPlaylistThrow() {
+    void getAllPlaylistThrow() throws DALException {
         when(playlistDAO.getAllPlaylist(any())).thenReturn(new ArrayList<>());
 
         ServiceException exception = org.junit.jupiter.api.Assertions.assertThrows(
@@ -52,7 +53,7 @@ class PlaylistServiceTest {
     }
 
     @Test
-    void getAllPlaylist() throws ServiceException {
+    void getAllPlaylist() throws ServiceException, DALException {
         // Arrange
         AuthenticatedUserDTO authUser = new AuthenticatedUserDTO();
         authUser.setUsername("testUser");

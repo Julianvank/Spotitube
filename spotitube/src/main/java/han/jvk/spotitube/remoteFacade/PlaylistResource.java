@@ -44,7 +44,11 @@ public class PlaylistResource extends TokenRequiredResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deletePlaylist(@QueryParam("token") final String token, @PathParam("id") final int id) throws RestException {
         AuthenticatedUserDTO authUser = createAuthUser(token);
-        playlistService.deletePlaylistById(authUser, id);
+        try {
+            playlistService.deletePlaylistById(authUser, id);
+        } catch (ServiceException e) {
+            throw new RestException(e);
+        }
         return getAllPlaylistResponse(authUser);
     }
 
@@ -54,7 +58,11 @@ public class PlaylistResource extends TokenRequiredResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addPlaylist(@QueryParam("token") final String token, PlaylistDTO playlistDTO) throws RestException {
         AuthenticatedUserDTO authUser = createAuthUser(token);
-        playlistService.addPlaylist(authUser, playlistDTO);
+        try {
+            playlistService.addPlaylist(authUser, playlistDTO);
+        } catch (ServiceException e) {
+            throw new RestException(e);
+        }
         return getAllPlaylistResponse(authUser);
     }
 
@@ -64,7 +72,11 @@ public class PlaylistResource extends TokenRequiredResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response editPlaylist(@QueryParam("token") final String token, @PathParam("id") final int id, PlaylistDTO playlistDTO) throws RestException {
         AuthenticatedUserDTO authUser = createAuthUser(token);
-        playlistService.editPlaylist(playlistDTO, id);
+        try {
+            playlistService.editPlaylist(playlistDTO, id);
+        } catch (ServiceException e) {
+            throw new RestException(e);
+        }
         return getAllPlaylistResponse(authUser);
     }
 
@@ -88,7 +100,6 @@ public class PlaylistResource extends TokenRequiredResource {
         try {
             trackService.addTrackToPlaylist(playlistId, trackDTO);
         } catch (ServiceException e) {
-            e.printStackTrace();
             throw new RestException("Unable to add Track.", e);
         }
         return getAllTracksResponse(playlistId, authUser);

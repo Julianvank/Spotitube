@@ -4,7 +4,7 @@ import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.UserDTO;
 import han.jvk.spotitube.exception.ServiceException;
 import han.jvk.spotitube.persistance.ITokenDAO;
-import han.jvk.spotitube.util.factory.ITokenFactory;
+import han.jvk.spotitube.util.factory.Token.ITokenFactory;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
