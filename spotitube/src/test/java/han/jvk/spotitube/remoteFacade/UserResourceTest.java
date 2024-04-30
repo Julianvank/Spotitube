@@ -15,7 +15,7 @@ import static org.mockito.Mockito.*;
 class UserResourceTest {
 
     @Test
-    void loginUserTrue() throws ServiceException, APIException {
+    void loginUserTrue() throws APIException {
         UserResource sut = new UserResource();
         IUserService serviceMock = mock(IUserService.class);
 

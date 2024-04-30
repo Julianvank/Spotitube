@@ -49,7 +49,7 @@ class PlaylistResourceTest {
     }
 
     @Test
-    void getAllPlaylistTrue() throws APIException, ServiceException {
+    void getAllPlaylistTrue() throws APIException {
         when(playlistMock.getAllPlaylist(authUser)).thenReturn(collectionDTO);
         when(sut.validateToken("testToken")).thenReturn(authUser);
 

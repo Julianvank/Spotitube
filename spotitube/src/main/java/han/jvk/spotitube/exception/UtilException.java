@@ -7,4 +7,7 @@ public class UtilException extends APIException {
         super(message, httpStatusCode);
     }
 
+    public UtilException(String message, Throwable cause, Integer httpStatusCode) {
+        super(message, cause, httpStatusCode);
+    }
 }

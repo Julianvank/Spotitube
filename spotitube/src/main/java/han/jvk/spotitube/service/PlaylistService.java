@@ -4,14 +4,11 @@ import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.PlaylistCollectionDTO;
 import han.jvk.spotitube.dto.PlaylistDTO;
 import han.jvk.spotitube.dto.TrackDTO;
-import han.jvk.spotitube.exception.DALException;
 import han.jvk.spotitube.exception.NoAffectedRowsException;
 import han.jvk.spotitube.exception.ServiceException;
 import han.jvk.spotitube.persistance.IPlaylistDAO;
-import han.jvk.spotitube.remoteFacade.TokenRequiredResource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.jboss.logging.Logger;
 
 import java.net.HttpURLConnection;
 import java.util.List;

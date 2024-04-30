@@ -4,13 +4,9 @@ import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.PlaylistDTO;
 import han.jvk.spotitube.dto.TrackDTO;
 import han.jvk.spotitube.exception.APIException;
-import han.jvk.spotitube.exception.RestException;
-import han.jvk.spotitube.exception.ServiceException;
 import han.jvk.spotitube.service.IPlaylistService;
 import han.jvk.spotitube.service.ITrackService;
 import jakarta.inject.Inject;
-
-
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;

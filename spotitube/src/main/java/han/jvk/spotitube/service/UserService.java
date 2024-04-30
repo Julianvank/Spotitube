@@ -1,16 +1,14 @@
 package han.jvk.spotitube.service;
 
-import java.net.HttpURLConnection;
-
 import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.UserDTO;
 import han.jvk.spotitube.exception.DALException;
 import han.jvk.spotitube.exception.ServiceException;
 import han.jvk.spotitube.persistance.IUserDAO;
-import han.jvk.spotitube.remoteFacade.TokenRequiredResource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.jboss.logging.Logger;
+
+import java.net.HttpURLConnection;
 
 @ApplicationScoped
 public class UserService implements IUserService {
