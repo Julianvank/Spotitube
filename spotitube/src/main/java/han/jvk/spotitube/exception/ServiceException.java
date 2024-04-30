@@ -1,8 +1,5 @@
 package han.jvk.spotitube.exception;
 
-import han.jvk.spotitube.remoteFacade.TokenRequiredResource;
-import org.jboss.logging.Logger;
-
 public class ServiceException extends APIException {
 
     public ServiceException(APIException cause, int httpStatusCode) {

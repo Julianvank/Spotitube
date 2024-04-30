@@ -2,7 +2,7 @@ package han.jvk.spotitube.remoteFacade;
 
 import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.UserDTO;
-import han.jvk.spotitube.exception.RestException;
+import han.jvk.spotitube.exception.APIException;
 import han.jvk.spotitube.exception.ServiceException;
 import han.jvk.spotitube.service.IUserService;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ import static org.mockito.Mockito.*;
 class UserResourceTest {
 
     @Test
-    void loginUserTrue() throws ServiceException, RestException {
+    void loginUserTrue() throws ServiceException, APIException {
         UserResource sut = new UserResource();
         IUserService serviceMock = mock(IUserService.class);
 
@@ -31,7 +31,7 @@ class UserResourceTest {
     }
 
     @Test
-    void loginUserThrows() throws ServiceException, RestException {
+    void loginUserThrows() throws ServiceException, APIException {
         UserResource sut = new UserResource();
         IUserService serviceMock = mock(IUserService.class);
 
@@ -41,7 +41,7 @@ class UserResourceTest {
         when(serviceMock.getUserToken(testUser)).thenThrow(new ServiceException("invalid login", HttpURLConnection.HTTP_BAD_REQUEST));
         sut.setUserService(serviceMock);
 
-        assertThrows(RestException.class, () -> {
+        assertThrows(APIException.class, () -> {
             sut.loginUser(testUser).getStatus();
         });
     }

@@ -1,10 +1,13 @@
 package han.jvk.spotitube.exception;
 
 
-public abstract class APIException extends Exception{
+public abstract class APIException extends RuntimeException{
 
-    private Integer httpStatusCode;
+    private Integer httpStatusCode = 500;
 
+    public APIException(String message){
+        super(message);
+    }
     public APIException(String message, Integer httpStatusCode) {
         super(message);
         this.httpStatusCode = httpStatusCode;

@@ -1,16 +1,21 @@
 package han.jvk.spotitube.util.factory.DBConnection;
 
+import han.jvk.spotitube.exception.UtilException;
+import han.jvk.spotitube.remoteFacade.HealthResource;
 import han.jvk.spotitube.util.DBPropertiesReader;
 import jakarta.enterprise.context.ApplicationScoped;
+import org.jboss.logging.Logger;
 
+import java.net.HttpURLConnection;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 @ApplicationScoped
 public class DBConnectionFactory implements IDBConnectionFactory {
+    private static final Logger log = Logger.getLogger(HealthResource.class.getName());
+
     private static final String PROPERTY_URL = "url";
-    private static final String PROPERTY_DRIVER = "driver";
     private static final String PROPERTY_USERNAME = "username";
     private static final String PROPERTY_PASSWORD = "password";
 
@@ -23,27 +28,18 @@ public class DBConnectionFactory implements IDBConnectionFactory {
     }
 
     public void setProperties(String name) {
-        if (name == null) {
-            //TODO throw exception
-        }
+        if (name == null)
+            throw new UtilException("No database was given for change", HttpURLConnection.HTTP_CONFLICT);
 
         DBPropertiesReader properties = new DBPropertiesReader(name);
 
         this.url = properties.getProperty(PROPERTY_URL);
-        String driverClassName = properties.getProperty(PROPERTY_DRIVER);
         this.password = properties.getProperty(PROPERTY_PASSWORD);
         this.username = properties.getProperty(PROPERTY_USERNAME);
 
-        System.out.println(name + "url is: " + url);
+        log.info("new database properties set: " + url + "username: " + username);
     }
 
-    /**
-     * Returns a connection to the database. Package private so that it can be used inside the DAO
-     * package only.
-     *
-     * @return A connection to the database.
-     * @throws SQLException If acquiring the connection fails.
-     */
     public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(url, username, password);
     }

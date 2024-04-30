@@ -4,30 +4,31 @@ import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.PlaylistDTO;
 import han.jvk.spotitube.dto.TrackDTO;
 import han.jvk.spotitube.exception.DALException;
-import han.jvk.spotitube.util.factory.DBConnection.IDBConnectionFactory;
+import han.jvk.spotitube.exception.NoAffectedRowsException;
+import han.jvk.spotitube.persistance.DatabaseConnector;
 import han.jvk.spotitube.persistance.IPlaylistDAO;
 import han.jvk.spotitube.persistance.dataMapper.PlaylistMapper;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 
+import java.net.HttpURLConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @ApplicationScoped
-public class PlaylistDAO extends PostgresConnector implements IPlaylistDAO {
+public class PlaylistDAO extends DatabaseConnector implements IPlaylistDAO {
     PlaylistMapper playlistMapper = new PlaylistMapper();
 
     @Override
     public List<PlaylistDTO> getAllPlaylist(String owner) throws DALException {
-        final String querie = "SELECT *\n" +
+        final String query = "SELECT *\n" +
                 "FROM playlists\n" +
                 "WHERE owner =  (select id FROM users where username = ?)";
 
         List<PlaylistDTO> list = new ArrayList<>();
 
         try (Connection conn = connect()) {
-            PreparedStatement stmt = conn.prepareStatement(querie);
+            PreparedStatement stmt = conn.prepareStatement(query);
 
             stmt.setString(1, owner);
 
@@ -39,29 +40,30 @@ public class PlaylistDAO extends PostgresConnector implements IPlaylistDAO {
             }
 
         } catch (SQLException e) {
-            throw new DALException("A problem was found while fulfilling the database request.", e);
+            throw new DALException("A problem was found while fulfilling the database request.", e, HttpURLConnection.HTTP_INTERNAL_ERROR);
         }
         return list;
     }
 
     @Override
     public PlaylistDTO getPlaylist(AuthenticatedUserDTO authUser, int id) throws DALException {
-        final String querie = "SELECT id, name ((SELECT name FROM users WHERE name LIKE ?)) AS owner\n" +
+        final String query = "SELECT id, name, ((SELECT name FROM users WHERE name LIKE ?)) AS owner\n" +
                 "FROM playlists\n" +
                 "WHERE id = ?";
 
         PlaylistDTO playlist = new PlaylistDTO();
         try (Connection conn = connect()) {
-            PreparedStatement stmt = conn.prepareStatement(querie);
+            PreparedStatement stmt = conn.prepareStatement(query);
 
             stmt.setString(1, authUser.getUsername());
             stmt.setString(2, String.valueOf(id));
 
-            ResultSet rs = stmt.executeQuery(querie);
+            ResultSet rs = stmt.executeQuery(query);
 
-
-            while (rs.next()) {
+            if (rs.next()) {
                 playlist = playlistMapper.mapResultSetToPlaylistDTO(rs);
+            }else{
+                return null;
             }
 
             return playlist;
@@ -79,21 +81,14 @@ public class PlaylistDAO extends PostgresConnector implements IPlaylistDAO {
 
         try (Connection conn = connect()) {
             PreparedStatement stmt1 = conn.prepareStatement(query1);
-
             stmt1.setInt(1, id);
+            int affectedRows1 = stmt1.executeUpdate();
 
-            stmt1.executeQuery();
-        } catch (SQLException e){
-            throw new DALException("A problem was found while fulfilling the database request.", e);
-        }
-
-
-        try (Connection conn = connect()) {
             PreparedStatement stmt2 = conn.prepareStatement(query2);
-
             stmt2.setInt(1, id);
+            int affectedRows2 = stmt2.executeUpdate();
+            if (affectedRows1 == 0 || affectedRows2 == 0) throw new NoAffectedRowsException("No rows were affected.", 200);
 
-            stmt2.executeQuery();
         } catch (SQLException e){
             throw new DALException("A problem was found while fulfilling the database request.", e);
         }
@@ -112,9 +107,7 @@ public class PlaylistDAO extends PostgresConnector implements IPlaylistDAO {
             stmt.setString(2, username);
 
             int affectedRows = stmt.executeUpdate();
-            if (affectedRows == 0) {
-                throw new SQLException("No rows were affected.");
-            }
+            if (affectedRows == 0) throw new NoAffectedRowsException("No rows were affected.", 200);
 
             assignId(playlistDTO, stmt);
 
@@ -145,7 +138,9 @@ public class PlaylistDAO extends PostgresConnector implements IPlaylistDAO {
                 stmt.setInt(1, track.getId());
                 stmt.setInt(2, playlistId);
 
-                stmt.executeUpdate();
+                int affectedRows = stmt.executeUpdate();
+                if (affectedRows == 0) throw new NoAffectedRowsException("No rows were affected.", 200);
+
             }
         } catch (SQLException e) {
             throw new DALException("A problem was found while fulfilling the database request.", e);
@@ -154,14 +149,17 @@ public class PlaylistDAO extends PostgresConnector implements IPlaylistDAO {
 
     @Override
     public void editPlaylist(PlaylistDTO playlistDTO, int id) throws DALException {
-        final String query = "UPDATE playlists SET name = ? WHERE ID = id";
+        final String query = "UPDATE playlists SET name = ? WHERE ID = ?";
 
         try (Connection conn = connect()) {
             PreparedStatement stmt = conn.prepareStatement(query);
 
             stmt.setString(1, playlistDTO.getName());
+            stmt.setInt(2, id);
 
-            stmt.executeUpdate();
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows == 0) throw new NoAffectedRowsException("No rows were affected.", 200);
+
         } catch (SQLException e){
             throw new DALException("A problem was found while fulfilling the database request.", e);
         }

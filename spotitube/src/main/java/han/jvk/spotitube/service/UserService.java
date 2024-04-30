@@ -15,7 +15,6 @@ import org.jboss.logging.Logger;
 @ApplicationScoped
 public class UserService implements IUserService {
 
-    private static final Logger log = Logger.getLogger(TokenRequiredResource.class.getName());
 
     private ITokenService tokenService;
     private IUserDAO userDAO;
@@ -39,7 +38,7 @@ public class UserService implements IUserService {
     private void authenticate(UserDTO user) throws ServiceException {
         try {
             if (!user.getPassword().equals(userDAO.getPasswordByUser(user.getUsername()))) {
-                throw new ServiceException("invalid login.", HttpURLConnection.HTTP_FORBIDDEN);
+                throw new ServiceException("invalid login info.", HttpURLConnection.HTTP_FORBIDDEN);
             }
         } catch (DALException e) {
             throw new ServiceException("Could not retrieve data.", HttpURLConnection.HTTP_UNAVAILABLE);

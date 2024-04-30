@@ -1,7 +1,7 @@
 package han.jvk.spotitube.remoteFacade;
 
 import han.jvk.spotitube.dto.AuthenticatedUserDTO;
-import han.jvk.spotitube.exception.RestException;
+import han.jvk.spotitube.exception.APIException;
 import han.jvk.spotitube.service.ITrackService;
 import jakarta.inject.Inject;
 
@@ -22,7 +22,7 @@ public class TrackResource extends TokenRequiredResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAvailableTracks(@QueryParam("token") final String token, @QueryParam("forPlaylist") final int id) throws RestException {
+    public Response getAvailableTracks(@QueryParam("token") final String token, @QueryParam("forPlaylist") final int id) throws APIException {
         AuthenticatedUserDTO authUser = validateToken(token);
         return Response.ok(trackService.getAvailableTracks(authUser, id)).build();
     }

@@ -1,4 +1,4 @@
-package han.jvk.spotitube.persistance.postgreSQL;
+package han.jvk.spotitube.persistance;
 
 import han.jvk.spotitube.util.factory.DBConnection.IDBConnectionFactory;
 import jakarta.inject.Inject;
@@ -6,7 +6,7 @@ import jakarta.inject.Inject;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public abstract class PostgresConnector {
+public abstract class DatabaseConnector {
     private IDBConnectionFactory connector;
 
     @Inject

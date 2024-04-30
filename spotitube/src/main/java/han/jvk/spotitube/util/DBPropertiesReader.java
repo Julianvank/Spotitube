@@ -1,6 +1,8 @@
 package han.jvk.spotitube.util;
 
 
+import han.jvk.spotitube.exception.UtilException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -19,7 +21,7 @@ public class DBPropertiesReader {
         try (InputStream input = DBPropertiesReader.class.getResourceAsStream(PROPERTIES_FILE) ){
             PROPERTIES.load(input);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UtilException("Database properties could not be read.", e);
         }
     }
 

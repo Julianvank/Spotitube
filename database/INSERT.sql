@@ -53,6 +53,10 @@ VALUES
   ('Billie Jean', 'Michael Jackson', 293, 'Thriller', 150, '1983-01-02', 'Legendary track by the King of Pop', true),
   ('Every Breath You Take', 'The Police', 243, 'Synchronicity', 120, '1983-05-20', 'Classic song with a haunting melody', false);
 
+
+SELECT t.id, t.title, t.performer, t.duration, t.album, t.playcount, t.publication_date, t.description, t.offline_available " +
+                "FROM tracks t RIGHT OUTER JOIN tracksinplaylist tip on t.id = tip.track_id where t.OFFLINE_AVAILABLE = true
+
 select * from tracks
 
 SELECT COUNT(ID) FROM tracks WHERE ID = ?

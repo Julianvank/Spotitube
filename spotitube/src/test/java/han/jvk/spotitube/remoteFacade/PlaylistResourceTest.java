@@ -3,7 +3,7 @@ package han.jvk.spotitube.remoteFacade;
 import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.PlaylistCollectionDTO;
 import han.jvk.spotitube.dto.PlaylistDTO;
-import han.jvk.spotitube.exception.RestException;
+import han.jvk.spotitube.exception.APIException;
 import han.jvk.spotitube.exception.ServiceException;
 import han.jvk.spotitube.service.IPlaylistService;
 import han.jvk.spotitube.service.ITokenService;
@@ -27,7 +27,7 @@ class PlaylistResourceTest {
     PlaylistDTO playlistDTO;
     PlaylistCollectionDTO collectionDTO;
     @BeforeEach
-    void setUp() throws RestException {
+    void setUp() throws APIException {
         setUpMock();
         playlistDTO = new PlaylistDTO();
         collectionDTO = new PlaylistCollectionDTO();
@@ -36,7 +36,7 @@ class PlaylistResourceTest {
     }
 
 
-    private void setUpMock() throws RestException {
+    private void setUpMock() throws APIException {
         sut = new PlaylistResource();
         playlistMock = mock(IPlaylistService.class);
         trackMock = mock(ITrackService.class);
@@ -49,7 +49,7 @@ class PlaylistResourceTest {
     }
 
     @Test
-    void getAllPlaylistTrue() throws RestException, ServiceException {
+    void getAllPlaylistTrue() throws APIException, ServiceException {
         when(playlistMock.getAllPlaylist(authUser)).thenReturn(collectionDTO);
         when(sut.validateToken("testToken")).thenReturn(authUser);
 

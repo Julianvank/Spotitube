@@ -2,6 +2,8 @@ package han.jvk.spotitube.persistance.postgreSQL;
 
 import han.jvk.spotitube.dto.TrackDTO;
 import han.jvk.spotitube.exception.DALException;
+import han.jvk.spotitube.exception.NoAffectedRowsException;
+import han.jvk.spotitube.persistance.DatabaseConnector;
 import han.jvk.spotitube.persistance.ITrackDAO;
 import han.jvk.spotitube.persistance.dataMapper.TrackMapper;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -11,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ApplicationScoped
-public class TrackDAO extends PostgresConnector implements ITrackDAO {
+public class TrackDAO extends DatabaseConnector implements ITrackDAO {
 
     TrackMapper trackMapper = new TrackMapper();
     
@@ -45,8 +47,8 @@ public class TrackDAO extends PostgresConnector implements ITrackDAO {
 
     @Override
     public List<TrackDTO> getAvailableTracks(int id) throws DALException {
-        final String query = "SELECT t.id, t.title, t.performer, t.duration, t.album, t.playcount, t.publication_date, t.description, t.offline_available\n" +
-                "FROM tracks t RIGHT OUTER JOIN tracksinplaylist tip on t.id = tip.track_id where available = true";
+        final String query = "SELECT t.id, t.title, t.performer, t.duration, t.album, t.playcount, t.publication_date, t.description, t.offline_available " +
+                "FROM tracks t RIGHT OUTER JOIN tracksinplaylist tip on t.id = tip.track_id where t.OFFLINE_AVAILABLE = true";
         List<TrackDTO> tracks = new ArrayList<>();
 
         try (Connection conn = connect()) {
@@ -77,7 +79,8 @@ public class TrackDAO extends PostgresConnector implements ITrackDAO {
             stmt.setInt(2, id);
 
 
-            stmt.executeUpdate();
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows == 0) throw new NoAffectedRowsException("No rows were affected.", 200);
 
         } catch (SQLException e) {
             throw new DALException("A problem was found while fulfilling the database request.", e);
@@ -94,7 +97,8 @@ public class TrackDAO extends PostgresConnector implements ITrackDAO {
             stmt.setInt(1, id);
             stmt.setInt(2, trackId);
 
-            stmt.executeUpdate();
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows == 0) throw new NoAffectedRowsException("No rows were affected.", 200);
 
         } catch (SQLException e) {
             throw new DALException("A problem was found while fulfilling the database request.", e);
