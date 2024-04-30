@@ -29,14 +29,6 @@ VALUES (1, 1),
        (4, 2),
        (5, 3);
 
-DELETE
-FROM tracksInPlaylist
-WHERE PLAYLIST_ID = 1;
-
-DELETE
-FROM playlists
-WHERE ID = 1;
-
 
 INSERT INTO playlists (NAME, OWNER)
 VALUES ('Playlist 1', 1);
@@ -44,8 +36,6 @@ INSERT INTO tracksInPlaylist (TRACK_ID, PLAYLIST_ID)
 VALUES (1, 4),
        (2, 4);
 
-INSERT INTO playlists (NAME, OWNER)
-VALUES (?, (SELECT id from users where username = ?));
 
 INSERT INTO tracks (TITLE, PERFORMER, DURATION, ALBUM, PLAYCOUNT, PUBLICATION_DATE, DESCRIPTION, OFFLINE_AVAILABLE)
 VALUES
@@ -54,14 +44,3 @@ VALUES
   ('Every Breath You Take', 'The Police', 243, 'Synchronicity', 120, '1983-05-20', 'Classic song with a haunting melody', false);
 
 
-SELECT t.id, t.title, t.performer, t.duration, t.album, t.playcount, t.publication_date, t.description, t.offline_available " +
-                "FROM tracks t RIGHT OUTER JOIN tracksinplaylist tip on t.id = tip.track_id where t.OFFLINE_AVAILABLE = true
-
-select * from tracks
-
-SELECT COUNT(ID) FROM tracks WHERE ID = ?
-
-select * from playlists
-SELECT *
-                FROM playlists
-                WHERE owner =  (select id FROM users where username = 'user1')

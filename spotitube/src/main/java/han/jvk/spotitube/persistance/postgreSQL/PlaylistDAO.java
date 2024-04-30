@@ -51,7 +51,7 @@ public class PlaylistDAO extends DatabaseConnector implements IPlaylistDAO {
                 "FROM playlists\n" +
                 "WHERE id = ?";
 
-        PlaylistDTO playlist = new PlaylistDTO();
+        PlaylistDTO playlist;
         try (Connection conn = connect()) {
             PreparedStatement stmt = conn.prepareStatement(query);
 

@@ -4,14 +4,13 @@ import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.PlaylistCollectionDTO;
 import han.jvk.spotitube.dto.PlaylistDTO;
 import han.jvk.spotitube.exception.APIException;
-import han.jvk.spotitube.exception.ServiceException;
 import han.jvk.spotitube.service.IPlaylistService;
 import han.jvk.spotitube.service.ITokenService;
 import han.jvk.spotitube.service.ITrackService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

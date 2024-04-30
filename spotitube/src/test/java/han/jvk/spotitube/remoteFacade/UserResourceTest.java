@@ -31,18 +31,15 @@ class UserResourceTest {
     }
 
     @Test
-    void loginUserThrows() throws ServiceException, APIException {
+    void loginUserThrows() throws APIException {
         UserResource sut = new UserResource();
         IUserService serviceMock = mock(IUserService.class);
 
         UserDTO testUser = new UserDTO("test", "test", 1);
-        AuthenticatedUserDTO authUser = new AuthenticatedUserDTO("username", "token");
 
         when(serviceMock.getUserToken(testUser)).thenThrow(new ServiceException("invalid login", HttpURLConnection.HTTP_BAD_REQUEST));
         sut.setUserService(serviceMock);
 
-        assertThrows(APIException.class, () -> {
-            sut.loginUser(testUser).getStatus();
-        });
+        assertThrows(APIException.class, () -> sut.loginUser(testUser).getStatus());
     }
 }

@@ -1,7 +1,11 @@
 package han.jvk.spotitube.exception;
 
 
+import han.jvk.spotitube.remoteFacade.HealthResource;
+import org.jboss.logging.Logger;
+
 public abstract class APIException extends RuntimeException{
+    private static final Logger log = Logger.getLogger(HealthResource.class.getName());
 
     private Integer httpStatusCode = 500;
 
@@ -42,7 +46,7 @@ public abstract class APIException extends RuntimeException{
         try {
             this.httpStatusCode = ((APIException) cause).httpStatusCode;
         } catch (ClassCastException e) {
-            e.printStackTrace();
+            log.warn(e);
             this.httpStatusCode = 500;
         }
     }
