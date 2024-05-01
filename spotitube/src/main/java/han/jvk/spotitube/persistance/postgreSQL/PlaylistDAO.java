@@ -107,7 +107,7 @@ public class PlaylistDAO extends DatabaseConnector implements IPlaylistDAO {
             stmt.setString(2, username);
 
             int affectedRows = stmt.executeUpdate();
-            if (affectedRows == 0) throw new NoAffectedRowsException("No rows were affected.", 200);
+            if (affectedRows == 0) throw new NoAffectedRowsException("No rows were affected.", HttpURLConnection.HTTP_OK);
 
             assignId(playlistDTO, stmt);
 

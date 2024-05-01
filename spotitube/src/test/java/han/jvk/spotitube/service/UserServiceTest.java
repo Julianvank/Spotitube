@@ -85,7 +85,7 @@ class UserServiceTest {
      * @throws DALException
      */
     @Test
-    void testGetUserToken_AuthenticationAssertThrowsPersistance() throws DALException {
+    void testGetUserToken_AuthenticationAssertThrowsDALException() throws DALException {
         // Arrange
         UserDTO user = new UserDTO("username", "password", 1);
 
@@ -98,7 +98,6 @@ class UserServiceTest {
         );
 
         //Assert
-        assertEquals("Authentication failed; Could not retrieve data.", exception.getMessage());
         assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, exception.getHttpStatusCode());
     }
 

@@ -67,7 +67,7 @@ public class PlaylistService implements IPlaylistService {
         try {
             playlistDAO.deletePlaylistById(authUser.getUsername(), id);
         } catch (NoAffectedRowsException e) {
-            throw new ServiceException(e);
+            throw new ServiceException(e, HttpURLConnection.HTTP_CONFLICT);
         }
     }
 
@@ -80,7 +80,7 @@ public class PlaylistService implements IPlaylistService {
             playlistDAO.addPlaylist(authUser.getUsername(), playlistDTO);
             playlistDAO.addTracksToPlaylist(authUser.getUsername(), playlistDTO.getTracks(), playlistDTO.getId());
         } catch (NoAffectedRowsException e) {
-            throw new ServiceException(e);
+            throw new ServiceException("Failed to add playlist, reason: ", e);
         }
     }
 
@@ -89,7 +89,7 @@ public class PlaylistService implements IPlaylistService {
         try {
             playlistDAO.editPlaylist(playlistDTO, id);
         } catch (NoAffectedRowsException e) {
-            throw new ServiceException(e);
+            throw new ServiceException("Failed to edit playlist, reason: ", e);
         }
     }
 
