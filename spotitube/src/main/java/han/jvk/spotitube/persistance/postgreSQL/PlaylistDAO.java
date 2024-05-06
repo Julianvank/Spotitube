@@ -1,6 +1,5 @@
 package han.jvk.spotitube.persistance.postgreSQL;
 
-import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.PlaylistDTO;
 import han.jvk.spotitube.dto.TrackDTO;
 import han.jvk.spotitube.exception.DALException;
@@ -39,31 +38,29 @@ public class PlaylistDAO extends DatabaseConnector implements IPlaylistDAO {
                 list.add(playlist);
             }
 
+            return list;
         } catch (SQLException e) {
             throw new DALException("A problem was found while fulfilling the database request.", e, HttpURLConnection.HTTP_INTERNAL_ERROR);
         }
-        return list;
     }
 
     @Override
-    public PlaylistDTO getPlaylist(AuthenticatedUserDTO authUser, int id) throws DALException {
+    public PlaylistDTO getPlaylist(String authUsername, int id) throws DALException {
         final String query = "SELECT id, name, ((SELECT name FROM users WHERE name LIKE ?)) AS owner\n" +
                 "FROM playlists\n" +
                 "WHERE id = ?";
 
-        PlaylistDTO playlist;
+        PlaylistDTO playlist = null;
         try (Connection conn = connect()) {
             PreparedStatement stmt = conn.prepareStatement(query);
 
-            stmt.setString(1, authUser.getUsername());
+            stmt.setString(1, authUsername);
             stmt.setString(2, String.valueOf(id));
 
-            ResultSet rs = stmt.executeQuery(query);
+            ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
                 playlist = playlistMapper.mapResultSetToPlaylistDTO(rs);
-            }else{
-                return null;
             }
 
             return playlist;

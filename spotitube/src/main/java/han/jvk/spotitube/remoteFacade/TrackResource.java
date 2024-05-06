@@ -23,8 +23,8 @@ public class TrackResource extends TokenRequiredResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAvailableTracks(@QueryParam("token") final String token, @QueryParam("forPlaylist") final int id) throws APIException {
-        AuthenticatedUserDTO authUser = validateToken(token);
-        return Response.ok(trackService.getAvailableTracks(authUser, id)).build();
+        validateToken(token);
+        return Response.ok(trackService.getAvailableTracks(id)).build();
     }
 
 }

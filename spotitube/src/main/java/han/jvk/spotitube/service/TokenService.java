@@ -28,10 +28,10 @@ public class TokenService implements ITokenService{
 
     @Override
     public AuthenticatedUserDTO getAuthenticatedUserDTOByToken(String token) throws ServiceException {
-        if (token == null) throw new ServiceException("Missing token.", HttpURLConnection.HTTP_FORBIDDEN);
+        if (token.isEmpty()) throw new ServiceException("Missing token.", HttpURLConnection.HTTP_FORBIDDEN);
         String user = tokenDAO.findUserByToken(token);
 
-        if (user == null) throw new ServiceException("Invalid token.", HttpURLConnection.HTTP_UNAUTHORIZED);
+        if (user == null || user.isEmpty()) throw new ServiceException("Invalid token.", HttpURLConnection.HTTP_UNAUTHORIZED);
         return new AuthenticatedUserDTO(user, token);
     }
 

@@ -12,9 +12,9 @@ public interface ITrackDAO {
 
     List<TrackDTO> getAvailableTracks(int id) throws DALException;
 
-    void addTrackToPlaylist(TrackDTO trackDTO, int id) throws DALException;
+    void addTrackToPlaylist(int trackId, int playlistId) throws DALException;
 
     void removeTrackFromPlaylist(int trackId, int id) throws DALException;
 
-    boolean lookUpTrack(TrackDTO trackDTO) throws DALException;
+    boolean lookUpTrack(int trackId) throws DALException;
 }

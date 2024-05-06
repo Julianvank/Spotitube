@@ -58,8 +58,8 @@ class PlaylistServiceTest {
     void getAllPlaylist() throws ServiceException, DALException {
         int[] trackAmount = {3, 8};
         int expectedLength = 0;
-        for (int i = 0; i < trackAmount.length; i++) {
-            expectedLength += trackAmount[i];
+        for (int j : trackAmount) {
+            expectedLength += j;
         }
         // Arrange
         AuthenticatedUserDTO authUser = new AuthenticatedUserDTO();
@@ -111,7 +111,7 @@ class PlaylistServiceTest {
     void getPlaylist() {
         PlaylistDTO expected = getPlaylistDTO(getTrackDTOS(5), "Playlist 1", 0);
 
-        when(playlistDAO.getPlaylist(any(), anyInt())).thenReturn(expected);
+        when(playlistDAO.getPlaylist(anyString(), anyInt())).thenReturn(expected);
 
         PlaylistDTO actual = sut.getPlaylist(authUser, 0);
 
@@ -120,7 +120,7 @@ class PlaylistServiceTest {
 
     @Test
     void getPlaylistThrows() {
-        when(playlistDAO.getPlaylist(any(), anyInt())).thenReturn(null);
+        when(playlistDAO.getPlaylist(anyString(), anyInt())).thenReturn(null);
 
         //Assert
 

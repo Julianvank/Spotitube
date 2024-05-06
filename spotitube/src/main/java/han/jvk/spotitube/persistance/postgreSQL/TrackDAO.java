@@ -16,7 +16,7 @@ import java.util.List;
 public class TrackDAO extends DatabaseConnector implements ITrackDAO {
 
     TrackMapper trackMapper = new TrackMapper();
-    
+
 
     @Override
     public List<TrackDTO> getAllTrackInPlaylist(int id) throws DALException {
@@ -68,15 +68,26 @@ public class TrackDAO extends DatabaseConnector implements ITrackDAO {
     }
 
     @Override
-    public void addTrackToPlaylist(TrackDTO trackDTO, int id) throws DALException {
+    public void addTrackToPlaylist(int trackId, int playlistId) throws DALException {
         final String query = "INSERT INTO tracksInPlaylist (TRACK_ID, PLAYLIST_ID)\n" +
                 "VALUES (?, ?)";
 
+        executeQuery(playlistId, trackId, query);
+    }
+
+    @Override
+    public void removeTrackFromPlaylist(int trackId, int playlistId) throws DALException {
+        final String query = "DELETE FROM tracksInPlaylist WHERE TRACK_ID = ? AND PLAYLIST_ID = ?";
+
+        executeQuery(trackId, playlistId, query);
+    }
+
+    private void executeQuery(int trackId, int playlistId, String query) {
         try (Connection conn = connect()) {
             PreparedStatement stmt = conn.prepareStatement(query);
 
-            stmt.setInt(1, trackDTO.getId());
-            stmt.setInt(2, id);
+            stmt.setInt(1, trackId);
+            stmt.setInt(2, playlistId);
 
 
             int affectedRows = stmt.executeUpdate();
@@ -88,40 +99,19 @@ public class TrackDAO extends DatabaseConnector implements ITrackDAO {
     }
 
     @Override
-    public void removeTrackFromPlaylist(int trackId, int id) throws DALException {
-        final String query = "DELETE FROM tracksInPlaylist WHERE PLAYLIST_ID = ? AND TRACK_ID = ?";
-
-        try (Connection conn = connect()) {
-            PreparedStatement stmt = conn.prepareStatement(query);
-
-            stmt.setInt(1, id);
-            stmt.setInt(2, trackId);
-
-            int affectedRows = stmt.executeUpdate();
-            if (affectedRows == 0) throw new NoAffectedRowsException("No rows were affected.", 200);
-
-        } catch (SQLException e) {
-            throw new DALException("A problem was found while fulfilling the database request.", e);
-        }
-    }
-
-    @Override
-    public boolean lookUpTrack(TrackDTO trackDTO) throws DALException {
+    public boolean lookUpTrack(int trackId) throws DALException {
         final String query = "SELECT COUNT(ID) FROM tracks WHERE ID = ?";
 
         try (Connection conn = connect()) {
             PreparedStatement stmt = conn.prepareStatement(query);
 
-            stmt.setInt(1, trackDTO.getId());
+            stmt.setInt(1, trackId);
 
             ResultSet rs = stmt.executeQuery();
 
-            while (rs.next()) {
-                if(rs.getInt(1) > 0){
-                    return true;
-                }
+            if (rs.getInt(1) > 0) {
+                return true;
             }
-
 
         } catch (SQLException e) {
             throw new DALException("A problem was found while fulfilling the database request.", e);

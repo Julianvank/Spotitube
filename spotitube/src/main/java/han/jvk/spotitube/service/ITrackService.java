@@ -9,7 +9,7 @@ import java.util.List;
 public interface ITrackService {
     List<TrackDTO> getAllTracksFromPlaylist(AuthenticatedUserDTO authUser, int id);
 
-    List<TrackDTO> getAvailableTracks(AuthenticatedUserDTO authUser, int id);
+    List<TrackDTO> getAvailableTracks(int id);
 
     void addTrackToPlaylist(int id, TrackDTO trackDTO) throws ServiceException;
 

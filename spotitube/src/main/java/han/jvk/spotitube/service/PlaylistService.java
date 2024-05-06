@@ -56,7 +56,7 @@ public class PlaylistService implements IPlaylistService {
 
     @Override
     public PlaylistDTO getPlaylist(AuthenticatedUserDTO authUser, int id) throws ServiceException {
-        PlaylistDTO playlist = playlistDAO.getPlaylist(authUser, id);
+        PlaylistDTO playlist = playlistDAO.getPlaylist(authUser.getUsername(), id);
         if (playlist == null) throw new ServiceException("There is no playlist", HttpURLConnection.HTTP_CONFLICT);
 
         return playlist;

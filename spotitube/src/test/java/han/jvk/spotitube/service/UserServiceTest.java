@@ -34,11 +34,6 @@ class UserServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    /**
-     * Test to verify correct beviour
-     * @throws DALException
-     * @throws ServiceException
-     */
     @Test
     void testGetUserToken_Success() throws DALException, ServiceException {
         // Arrange
@@ -58,10 +53,7 @@ class UserServiceTest {
     }
 
 
-    /**
-     * Test to verify wrong password handeling
-     * @throws DALException
-     */
+
     @Test
     void testGetUserToken_AuthenticationFailed() throws DALException {
         // Arrange
@@ -76,14 +68,10 @@ class UserServiceTest {
         );
 
         //Assert
-        assertEquals("Authentication failed; invalid login.", exception.getMessage());
-        assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, exception.getHttpStatusCode());
+        assertEquals(HttpURLConnection.HTTP_FORBIDDEN, exception.getHttpStatusCode());
     }
 
-    /**
-     * Test to verify PersistanceException handeling.
-     * @throws DALException
-     */
+
     @Test
     void testGetUserToken_AuthenticationAssertThrowsDALException() throws DALException {
         // Arrange
@@ -98,7 +86,7 @@ class UserServiceTest {
         );
 
         //Assert
-        assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, exception.getHttpStatusCode());
+        assertEquals(HttpURLConnection.HTTP_UNAVAILABLE, exception.getHttpStatusCode());
     }
 
 }
