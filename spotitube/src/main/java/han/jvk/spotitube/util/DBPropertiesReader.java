@@ -16,9 +16,10 @@ public class DBPropertiesReader {
 
     public DBPropertiesReader(String specificKey) {
         this.specificKey = specificKey;
+        loadProperties();
     }
 
-    static {
+    private void loadProperties() {
         try (InputStream input = DBPropertiesReader.class.getResourceAsStream(PROPERTIES_FILE) ){
             PROPERTIES.load(input);
         } catch (IOException e) {
@@ -28,7 +29,6 @@ public class DBPropertiesReader {
 
     public String getProperty(String key){
         String fullKey = specificKey + "." + key;
-
         return PROPERTIES.getProperty(fullKey);
     }
 }

@@ -5,14 +5,17 @@ import han.jvk.spotitube.dto.TrackDTO;
 import han.jvk.spotitube.exception.NoAffectedRowsException;
 import han.jvk.spotitube.exception.ServiceException;
 import han.jvk.spotitube.persistance.ITrackDAO;
+import han.jvk.spotitube.remoteFacade.HealthResource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.jboss.logging.Logger;
 
 import java.net.HttpURLConnection;
 import java.util.List;
 
 @ApplicationScoped
 public class TrackService implements ITrackService {
+    private static final Logger log = Logger.getLogger(TrackService.class.getName());
 
     ITrackDAO trackDAO;
 
@@ -24,14 +27,14 @@ public class TrackService implements ITrackService {
     @Override
     public List<TrackDTO> getAllTracksFromPlaylist(AuthenticatedUserDTO authUser, int id) {
         List<TrackDTO> list = trackDAO.getAllTrackInPlaylist(id);
-        if (list.isEmpty()) throw new ServiceException("Playlist is empty", HttpURLConnection.HTTP_OK);
+        if (list.isEmpty()) log.info("No tracks to add on playlist: " + id);
         return list;
     }
 
     @Override
     public List<TrackDTO> getAvailableTracks(int id) {
         List<TrackDTO> list = trackDAO.getAvailableTracks(id);
-        if (list.isEmpty()) throw new ServiceException("There are no available tracks.", HttpURLConnection.HTTP_OK);
+        if (list.isEmpty()) log.info("No available tracks on: " + id);
         return list;
     }
 

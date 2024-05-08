@@ -35,23 +35,21 @@ public class PlaylistService implements IPlaylistService {
         PlaylistCollectionDTO collection = new PlaylistCollectionDTO();
         List<PlaylistDTO> list = playlistDAO.getAllPlaylist(authUser.getUsername());
 
-        if (list.isEmpty())
-            throw new ServiceException("There are no playlist", HttpURLConnection.HTTP_CONFLICT);
+        if (list.isEmpty()) throw new ServiceException("There are no playlist", HttpURLConnection.HTTP_CONFLICT);
 
-        addAllTracksToList(authUser, list, collection);
-        collection.setLength(getLength(list));
+        collection.setPlaylists(addAllTracksToList(authUser, list));
+        collection.setLength(getLength(collection.getPlaylists()));
+
 
         return collection;
     }
 
-    private void addAllTracksToList(AuthenticatedUserDTO authUser, List<PlaylistDTO> list, PlaylistCollectionDTO collection) {
-        if (list.isEmpty()) throw new ServiceException("No tracks to add", HttpURLConnection.HTTP_CONFLICT);
-
+    private List<PlaylistDTO> addAllTracksToList(AuthenticatedUserDTO authUser, List<PlaylistDTO> list) {
         for (PlaylistDTO playlist : list) {
             playlist.setTracks(trackService.getAllTracksFromPlaylist(authUser, playlist.getId()));
         }
 
-        collection.setPlaylists(list);
+        return list;
     }
 
     @Override

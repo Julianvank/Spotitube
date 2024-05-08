@@ -43,4 +43,6 @@ VALUES
   ('Billie Jean', 'Michael Jackson', 293, 'Thriller', 150, '1983-01-02', 'Legendary track by the King of Pop', true),
   ('Every Breath You Take', 'The Police', 243, 'Synchronicity', 120, '1983-05-20', 'Classic song with a haunting melody', false);
 
-
+select * from playlists
+select * from users
+select * from playlists where owner = (select id from users where username = 'user1')
