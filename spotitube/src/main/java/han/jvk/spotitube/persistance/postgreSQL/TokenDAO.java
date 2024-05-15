@@ -46,7 +46,7 @@ public class TokenDAO extends DatabaseConnector implements ITokenDAO {
 
 
     @Override
-    public void saveAuthenticatedUser(AuthenticatedUserDTO authDTO) {
-        userTokenStorage.put(authDTO.getToken(), authDTO.getUsername());
+    public void saveAuthenticatedUser(AuthenticatedUserDTO authUser) {
+        userTokenStorage.put(authUser.getToken(), authUser.getUsername());
     }
 }

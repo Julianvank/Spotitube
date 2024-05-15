@@ -13,7 +13,7 @@ import java.sql.SQLException;
 
 @ApplicationScoped
 public class DBConnectionFactory implements IDBConnectionFactory {
-    private static final Logger log = Logger.getLogger(HealthResource.class.getName());
+    private static final Logger log = Logger.getLogger(DBConnectionFactory.class.getName());
 
     private static final String PROPERTY_URL = "url";
     private static final String PROPERTY_USERNAME = "username";
@@ -22,9 +22,10 @@ public class DBConnectionFactory implements IDBConnectionFactory {
     private String url;
     private String username;
     private String password;
+    private final String defaultName = "postgres";
 
     public DBConnectionFactory(){
-        setProperties("postgres");
+        setProperties(defaultName);
     }
 
     public void setProperties(String name) {

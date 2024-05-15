@@ -14,8 +14,8 @@ import jakarta.ws.rs.core.Response;
 @Path("/playlists")
 public class PlaylistResource extends TokenRequiredResource {
 
-    IPlaylistService playlistService;
-    ITrackService trackService;
+    private IPlaylistService playlistService;
+    private ITrackService trackService;
 
     @Inject
     public void setPlaylistService(IPlaylistService playlistService) {
@@ -90,10 +90,10 @@ public class PlaylistResource extends TokenRequiredResource {
     @Path("/:{id}/tracks/:{trackId}")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public Response removeTrackFromPlaylist(@QueryParam("token") final String token, @PathParam("id") final int id, @PathParam("trackId") final int trackId) throws APIException {
+    public Response removeTrackFromPlaylist(@QueryParam("token") final String token, @PathParam("id") final int playlistId, @PathParam("trackId") final int trackId) throws APIException {
         AuthenticatedUserDTO authUser = createAuthUser(token);
-        trackService.removeTrackFromPlaylist(authUser, id, trackId);
-        return getAllTracksResponse(id, authUser);
+        trackService.removeTrackFromPlaylist(authUser, playlistId, trackId);
+        return getAllTracksResponse(playlistId, authUser);
     }
 
 

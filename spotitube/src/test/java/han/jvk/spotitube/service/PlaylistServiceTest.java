@@ -88,7 +88,6 @@ class PlaylistServiceTest {
         assertEquals("Playlist 2", result.getPlaylists().get(1).getName());
     }
 
-    //TODO write getLength test which uses different numbers.
     private static List<TrackDTO> getTrackDTOS(int amount) {
         List<TrackDTO> tracks = new ArrayList<>();
         for (int i = 0; i < amount; i++) {

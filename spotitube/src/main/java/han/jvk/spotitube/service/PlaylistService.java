@@ -38,7 +38,7 @@ public class PlaylistService implements IPlaylistService {
         if (list.isEmpty()) throw new ServiceException("There are no playlist", HttpURLConnection.HTTP_CONFLICT);
 
         collection.setPlaylists(addAllTracksToList(authUser, list));
-        collection.setLength(getLength(collection.getPlaylists()));
+        collection.setLength(calculateLength(collection.getPlaylists()));
 
 
         return collection;
@@ -91,7 +91,7 @@ public class PlaylistService implements IPlaylistService {
         }
     }
 
-    private int getLength(List<PlaylistDTO> playlists) {
+    private int calculateLength(List<PlaylistDTO> playlists) {
         int length = 0;
         for (PlaylistDTO playlist : playlists) {
             for (TrackDTO track : playlist.getTracks()) {

@@ -7,14 +7,13 @@ import java.util.List;
 
 public interface ITrackDAO {
 
-    List<TrackDTO> getAllTrackInPlaylist(int id) throws DALException;
-
+    List<TrackDTO> getAllTracksInPlaylist(int id) throws DALException;
 
     List<TrackDTO> getAvailableTracks(int id) throws DALException;
 
     void addTrackToPlaylist(int trackId, int playlistId) throws DALException;
 
-    void removeTrackFromPlaylist(int trackId, int id) throws DALException;
+    void removeTrackFromPlaylist(int trackId, int playlistId) throws DALException;
 
     boolean lookUpTrack(int trackId) throws DALException;
 }

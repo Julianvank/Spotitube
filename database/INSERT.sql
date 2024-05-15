@@ -46,3 +46,10 @@ VALUES
 select * from playlists
 select * from users
 select * from playlists where owner = (select id from users where username = 'user1')
+
+select * from tracks
+SELECT t.id, t.title, t.performer, t.duration, t.album, t.playcount, t.publication_date, t.description, t.offline_available
+FROM tracks t
+    RIGHT OUTER JOIN tracksinplaylist tip on t.id = tip.track_id where t.OFFLINE_AVAILABLE = true
+
+SELECT password FROM users WHERE username = 

@@ -19,7 +19,7 @@ public class TrackDAO extends DatabaseConnector implements ITrackDAO {
 
 
     @Override
-    public List<TrackDTO> getAllTrackInPlaylist(int id) throws DALException {
+    public List<TrackDTO> getAllTracksInPlaylist(int id) throws DALException {
         final String query = "SELECT t.id, t.title, t.performer, t.duration, t.album, t.playcount, t.publication_date, t.description, t.offline_available\n" +
                 "FROM tracksinplaylist tip LEFT JOIN public.tracks t on t.id = tip.track_id\n" +
                 "WHERE playlist_id = ?;";
@@ -42,7 +42,6 @@ public class TrackDAO extends DatabaseConnector implements ITrackDAO {
         } catch (SQLException e) {
             throw new DALException("A problem was found while fulfilling the database request.", e);
         }
-
     }
 
     @Override
@@ -108,9 +107,10 @@ public class TrackDAO extends DatabaseConnector implements ITrackDAO {
             stmt.setInt(1, trackId);
 
             ResultSet rs = stmt.executeQuery();
-
-            if (rs.getInt(1) > 0) {
-                return true;
+            while(rs.next()) {
+                if (rs.getInt(1) > 0) {
+                    return true;
+                }
             }
 
         } catch (SQLException e) {

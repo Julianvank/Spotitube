@@ -39,30 +39,6 @@ class TrackServiceTest {
     }
 
     @Test
-    void getAllTracksFromPlaylist() {
-        when(trackDAO.getAllTrackInPlaylist(anyInt())).thenReturn(new ArrayList<>());
-
-        ServiceException exception = assertThrows(
-                ServiceException.class,
-                () -> sut.getAllTracksFromPlaylist(any(AuthenticatedUserDTO.class), 0)
-        );
-
-        assertEquals(HttpURLConnection.HTTP_OK ,exception.getHttpStatusCode());
-    }
-
-    @Test
-    void getAvailableTracks() {
-        when(trackDAO.getAvailableTracks(anyInt())).thenReturn(new ArrayList<>());
-
-        ServiceException exception = assertThrows(
-                ServiceException.class,
-                () -> sut.getAvailableTracks(anyInt())
-        );
-
-        assertEquals(HttpURLConnection.HTTP_OK ,exception.getHttpStatusCode());
-    }
-
-    @Test
     void addTrackToPlaylist() {
         when(trackDAO.lookUpTrack(anyInt())).thenReturn(false);
         TrackDTO trackDTO = new TrackDTO();

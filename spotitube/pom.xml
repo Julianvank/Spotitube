@@ -51,7 +51,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.3.8</version> <!-- Replace with the latest version -->
+            <version>42.7.3</version>
         </dependency>
 
         <dependency>
@@ -83,7 +83,11 @@
             <version>5.11.0</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.12</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -118,40 +122,27 @@
                 <configuration>
                     <filename>${project.build.finalName}.war</filename>
                 </configuration>
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>add-datasource</id>-->
-<!--                        <phase>package</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>add-resource</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            <address>subsystem=datasources,data-source=java:jboss/myDs</address>-->
-<!--                            <resources>-->
-<!--                                <resource>-->
-<!--                                    <properties>-->
-<!--                                        <jndi-name>java:jboss/myDs</jndi-name>-->
-<!--                                        <enabled>true</enabled>-->
-<!--                                        <connection-url>jdbc:h2:mem:test;DB_CLOSE_DELAY=-1</connection-url>-->
-<!--                                        <driver-class>org.h2.Driver</driver-class>-->
-<!--                                        <driver-name>h2</driver-name>-->
-<!--                                        <user-name>sa</user-name>-->
-<!--                                        <password>sa</password>-->
-<!--                                    </properties>-->
-<!--                                </resource>-->
-<!--                            </resources>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>generate-code-coverage-report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
-
-    <!--    <distributionManagement>-->
-    <!--        <repository>-->
-    <!--            <id>spotitube</id>-->
-    <!--            <url>http://localhost:8080/</url>-->
-    <!--        </repository>-->
-    <!--    </distributionManagement>-->
 
 </project>

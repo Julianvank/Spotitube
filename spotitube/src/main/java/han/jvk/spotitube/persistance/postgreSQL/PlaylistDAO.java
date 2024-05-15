@@ -22,7 +22,7 @@ public class PlaylistDAO extends DatabaseConnector implements IPlaylistDAO {
     public List<PlaylistDTO> getAllPlaylist(String owner) throws DALException {
         final String query = "SELECT *\n" +
                 "FROM playlists\n" +
-                "WHERE owner =  (select id FROM users where username = ?)";
+                "WHERE owner = (select id FROM users where username = ? ) ORDER BY id";
 
         List<PlaylistDTO> list = new ArrayList<>();
 
@@ -79,12 +79,12 @@ public class PlaylistDAO extends DatabaseConnector implements IPlaylistDAO {
         try (Connection conn = connect()) {
             PreparedStatement stmt1 = conn.prepareStatement(query1);
             stmt1.setInt(1, id);
-            int affectedRows1 = stmt1.executeUpdate();
+            stmt1.executeUpdate();
 
             PreparedStatement stmt2 = conn.prepareStatement(query2);
             stmt2.setInt(1, id);
-            int affectedRows2 = stmt2.executeUpdate();
-            if (affectedRows1 == 0 || affectedRows2 == 0) throw new NoAffectedRowsException("No rows were affected.", 200);
+            int affectedRows = stmt2.executeUpdate();
+            if (affectedRows == 0) throw new NoAffectedRowsException("No rows were affected.", 200);
 
         } catch (SQLException e){
             throw new DALException("A problem was found while fulfilling the database request.", e);
@@ -113,7 +113,7 @@ public class PlaylistDAO extends DatabaseConnector implements IPlaylistDAO {
         }
     }
 
-    private static void assignId(PlaylistDTO playlistDTO, PreparedStatement stmt) throws SQLException {
+    private void assignId(PlaylistDTO playlistDTO, PreparedStatement stmt) throws SQLException {
         try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
             if (generatedKeys.next()) {
                 int id = generatedKeys.getInt(1);

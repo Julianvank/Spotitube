@@ -5,7 +5,6 @@ import han.jvk.spotitube.dto.TrackDTO;
 import han.jvk.spotitube.exception.NoAffectedRowsException;
 import han.jvk.spotitube.exception.ServiceException;
 import han.jvk.spotitube.persistance.ITrackDAO;
-import han.jvk.spotitube.remoteFacade.HealthResource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.jboss.logging.Logger;
@@ -26,7 +25,7 @@ public class TrackService implements ITrackService {
 
     @Override
     public List<TrackDTO> getAllTracksFromPlaylist(AuthenticatedUserDTO authUser, int id) {
-        List<TrackDTO> list = trackDAO.getAllTrackInPlaylist(id);
+        List<TrackDTO> list = trackDAO.getAllTracksInPlaylist(id);
         if (list.isEmpty()) log.info("No tracks to add on playlist: " + id);
         return list;
     }

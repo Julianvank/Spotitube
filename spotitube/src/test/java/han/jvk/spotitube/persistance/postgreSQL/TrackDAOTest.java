@@ -60,7 +60,7 @@ class TrackDAOTest {
         when(mockResultSet.getInt("id")).thenReturn(expectedTracks.get(0).getId(), expectedTracks.get(1).getId());
 
         // Act
-        List<TrackDTO> actualTracks = sut.getAllTrackInPlaylist(playlistId);
+        List<TrackDTO> actualTracks = sut.getAllTracksInPlaylist(playlistId);
 
         // Assert
         assertEquals(expectedTracks.size(), actualTracks.size());
@@ -73,7 +73,7 @@ class TrackDAOTest {
         // No need for an assertion as the test expects an exception
         assertThrows(
                 DALException.class,
-                () -> sut.getAllTrackInPlaylist(0)
+                () -> sut.getAllTracksInPlaylist(0)
         );
     }
 
@@ -138,6 +138,7 @@ class TrackDAOTest {
     @Test
     void lookUpTrackTrue() throws SQLException {
         when(mockPrepStatement.executeQuery()).thenReturn(mockResultSet);
+        when(mockResultSet.next()).thenReturn(true);
         when(mockResultSet.getInt(1)).thenReturn(5);
 
         boolean actual = sut.lookUpTrack(1);

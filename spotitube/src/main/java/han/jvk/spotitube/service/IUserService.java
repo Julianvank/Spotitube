@@ -6,5 +6,5 @@ import han.jvk.spotitube.exception.ServiceException;
 
 
 public interface IUserService {
-    AuthenticatedUserDTO getUserToken(UserDTO user) throws ServiceException;
+    AuthenticatedUserDTO getUserToken(UserDTO userDTO) throws ServiceException;
 }

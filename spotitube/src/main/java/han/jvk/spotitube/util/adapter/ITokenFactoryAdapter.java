@@ -1,6 +1,6 @@
 package han.jvk.spotitube.util.adapter;
 
-public interface TokenFactoryAdapter {
+public interface ITokenFactoryAdapter {
 
     String generate();
 }

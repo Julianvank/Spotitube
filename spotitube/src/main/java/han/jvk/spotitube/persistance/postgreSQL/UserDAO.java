@@ -26,13 +26,13 @@ public class UserDAO extends DatabaseConnector implements IUserDAO {
 
             ResultSet rs = stmt.executeQuery();
 
-            if (rs.next()) {
-                password = rs.getString(1);
+            while (rs.next()) {
+                return rs.getString(1);
             }
-            return password;
 
         } catch (SQLException e) {
             throw new DALException("A problem was found while fulfilling the database request.", e);
         }
+        return password;
     }
 }
