@@ -9,6 +9,7 @@ import han.jvk.spotitube.exception.ServiceException;
 import han.jvk.spotitube.persistance.IPlaylistDAO;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.jboss.logging.Logger;
 
 import java.net.HttpURLConnection;
 import java.util.List;
@@ -16,9 +17,9 @@ import java.util.List;
 @ApplicationScoped
 public class PlaylistService implements IPlaylistService {
 
-
     IPlaylistDAO playlistDAO;
     ITrackService trackService;
+    private static final Logger log = Logger.getLogger(PlaylistService.class.getName());
 
     @Inject
     public void setPlaylistDAO(IPlaylistDAO playlistDAO) {
@@ -35,7 +36,7 @@ public class PlaylistService implements IPlaylistService {
         PlaylistCollectionDTO collection = new PlaylistCollectionDTO();
         List<PlaylistDTO> list = playlistDAO.getAllPlaylist(authUser.getUsername());
 
-        if (list.isEmpty()) throw new ServiceException("There are no playlist", HttpURLConnection.HTTP_CONFLICT);
+        if (list.isEmpty()) log.info("There are no playlist");
 
         collection.setPlaylists(addAllTracksToList(authUser, list));
         collection.setLength(calculateLength(collection.getPlaylists()));

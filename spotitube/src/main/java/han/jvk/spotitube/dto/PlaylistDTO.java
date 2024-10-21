@@ -2,7 +2,7 @@ package han.jvk.spotitube.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-
+    
 public class PlaylistDTO {
 
     private int id;

@@ -27,12 +27,12 @@ class PlaylistServiceTest {
 
     @Mock
     IPlaylistDAO playlistDAO;
-
     @Mock
     ITrackService trackService;
 
     @InjectMocks
     PlaylistService sut;
+
     AuthenticatedUserDTO authUser = new AuthenticatedUserDTO("username", "token");
 
     @BeforeEach
