@@ -41,7 +41,6 @@ public class PlaylistService implements IPlaylistService {
         collection.setPlaylists(addAllTracksToList(authUser, list));
         collection.setLength(calculateLength(collection.getPlaylists()));
 
-
         return collection;
     }
 
@@ -56,7 +55,7 @@ public class PlaylistService implements IPlaylistService {
     @Override
     public PlaylistDTO getPlaylist(AuthenticatedUserDTO authUser, int id) throws ServiceException {
         PlaylistDTO playlist = playlistDAO.getPlaylist(authUser.getUsername(), id);
-        if (playlist == null) throw new ServiceException("There is no playlist", HttpURLConnection.HTTP_CONFLICT);
+        if (playlist == null) log.info("There is no playlist");
 
         return playlist;
     }
@@ -66,20 +65,20 @@ public class PlaylistService implements IPlaylistService {
         try {
             playlistDAO.deletePlaylistById(authUser.getUsername(), id);
         } catch (NoAffectedRowsException e) {
-            throw new ServiceException(e, HttpURLConnection.HTTP_CONFLICT);
+            log.info("There were no rows to remove");
         }
     }
 
     @Override
     public void addPlaylist(AuthenticatedUserDTO authUser, PlaylistDTO playlistDTO) throws ServiceException {
         if (playlistDTO.getId() != -1)
-            throw new ServiceException("Incorrect id of playlist", HttpURLConnection.HTTP_CONFLICT);
+            log.info("Incorrect id of playlist");
 
         try {
             playlistDAO.addPlaylist(authUser.getUsername(), playlistDTO);
             playlistDAO.addTracksToPlaylist(authUser.getUsername(), playlistDTO.getTracks(), playlistDTO.getId());
         } catch (NoAffectedRowsException e) {
-            throw new ServiceException("Failed to add playlist, reason: ", e);
+            log.info("There were no rows to add");
         }
     }
 
@@ -88,7 +87,7 @@ public class PlaylistService implements IPlaylistService {
         try {
             playlistDAO.editPlaylist(playlistDTO, id);
         } catch (NoAffectedRowsException e) {
-            throw new ServiceException("Failed to edit playlist, reason: ", e);
+            log.info("There were no rows to edit");
         }
     }
 

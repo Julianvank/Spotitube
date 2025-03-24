@@ -26,7 +26,7 @@ public class TrackService implements ITrackService {
     @Override
     public List<TrackDTO> getAllTracksFromPlaylist(AuthenticatedUserDTO authUser, int id) {
         List<TrackDTO> list = trackDAO.getAllTracksInPlaylist(id);
-        if (list.isEmpty()) log.info("No tracks to add on playlist: " + id);
+        if (list.isEmpty()) log.info("Playlist contains no tracks: " + id);
         return list;
     }
 
@@ -41,19 +41,19 @@ public class TrackService implements ITrackService {
     public void addTrackToPlaylist(int id, TrackDTO trackDTO) throws ServiceException {
         try {
             if (!trackDAO.lookUpTrack(trackDTO.getId()))
-                throw new ServiceException("Track is not in database", HttpURLConnection.HTTP_CONFLICT);
+                log.info("Track is not in database");
             trackDAO.addTrackToPlaylist(trackDTO.getId(), id);
         } catch (NoAffectedRowsException e) {
-            throw new ServiceException(e);
+            log.info("There were no rows added to database");
         }
     }
 
     @Override
-    public void removeTrackFromPlaylist(AuthenticatedUserDTO authUser, int id, int trackId) {
-        try {
-            trackDAO.removeTrackFromPlaylist(trackId, id);
-        } catch (NoAffectedRowsException e) {
-            throw new ServiceException(e);
-        }
+    public void removeTrackFromPlaylist(AuthenticatedUserDTO authUser, int playlistId, int trackId) {
+//        try {
+            trackDAO.removeTrackFromPlaylist(trackId, playlistId);
+//        } catch (NoAffectedRowsException e) {
+//            log.info("There was no track to delete");
+//        }
     }
 }

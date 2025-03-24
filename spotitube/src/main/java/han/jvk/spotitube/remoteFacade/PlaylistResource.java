@@ -4,6 +4,7 @@ import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.PlaylistDTO;
 import han.jvk.spotitube.dto.TrackDTO;
 import han.jvk.spotitube.exception.APIException;
+import han.jvk.spotitube.remoteFacade.responses.TrackInPlaylistResponse;
 import han.jvk.spotitube.service.IPlaylistService;
 import han.jvk.spotitube.service.ITrackService;
 import jakarta.inject.Inject;
@@ -34,7 +35,7 @@ public class PlaylistResource extends TokenRequiredResource {
         return getAllPlaylistResponse(authUser);
     }
 
-    @Path("/:{id}")
+    @Path("/{id}")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     public Response deletePlaylist(@QueryParam("token") final String token, @PathParam("id") final int id) throws APIException {
@@ -55,7 +56,7 @@ public class PlaylistResource extends TokenRequiredResource {
         return getAllPlaylistResponse(authUser);
     }
 
-    @Path("/:{id}")
+    @Path("/{id}")
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -67,7 +68,7 @@ public class PlaylistResource extends TokenRequiredResource {
     }
 
 
-    @Path("/:{id}/tracks")
+    @Path("/{id}/tracks")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllTracksFromPlaylist(@QueryParam("token") final String token, @PathParam("id") final int id) throws APIException {
@@ -76,7 +77,7 @@ public class PlaylistResource extends TokenRequiredResource {
     }
 
 
-    @Path("/:{id}/tracks")
+    @Path("/{id}/tracks")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -87,7 +88,7 @@ public class PlaylistResource extends TokenRequiredResource {
         return getAllTracksResponse(playlistId, authUser);
     }
 
-    @Path("/:{id}/tracks/:{trackId}")
+    @Path("/{id}/tracks/{trackId}")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeTrackFromPlaylist(@QueryParam("token") final String token, @PathParam("id") final int playlistId, @PathParam("trackId") final int trackId) throws APIException {
@@ -99,11 +100,11 @@ public class PlaylistResource extends TokenRequiredResource {
 
     private Response getAllPlaylistResponse(AuthenticatedUserDTO authUser) throws APIException {
         return Response.ok(playlistService.getAllPlaylist(authUser)).build();
-
     }
 
     private Response getAllTracksResponse(int id, AuthenticatedUserDTO authUser) {
-        return Response.ok(trackService.getAllTracksFromPlaylist(authUser, id)).build();
+        TrackInPlaylistResponse response = new TrackInPlaylistResponse(trackService.getAllTracksFromPlaylist(authUser, id));
+        return Response.ok(response).build();
     }
 
     private AuthenticatedUserDTO createAuthUser(String token) throws APIException {

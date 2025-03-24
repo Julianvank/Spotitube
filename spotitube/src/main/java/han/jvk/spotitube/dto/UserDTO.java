@@ -1,10 +1,10 @@
 package han.jvk.spotitube.dto;
 
 public class UserDTO {
-    private String username, password;
+    private String user, password;
 
-    public UserDTO(String username, String password, int id){
-        this.username = username;
+    public UserDTO(String user, String password, int id){
+        this.user = user;
         this.password = password;
     }
 
@@ -12,12 +12,12 @@ public class UserDTO {
 
     }
 
-    public String getUsername() {
-        return username;
+    public String getUser() {
+        return user;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUser(String user) {
+        this.user = user;
     }
 
     public String getPassword() {

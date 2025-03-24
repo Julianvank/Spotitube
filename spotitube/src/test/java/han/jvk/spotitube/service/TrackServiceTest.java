@@ -16,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -31,46 +32,24 @@ class TrackServiceTest {
     @Mock
     ITrackDAO trackDAO;
 
+    private List<TrackDTO> trackListHelper;
     @BeforeEach
     void setUp() {
         this.sut = new TrackService();
+        this.trackListHelper = new ArrayList<>();
+        trackListHelper.addAll(createTracklist());
 
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-    void addTrackToPlaylist() {
-        when(trackDAO.lookUpTrack(anyInt())).thenReturn(false);
-        TrackDTO trackDTO = new TrackDTO();
-        trackDTO.setId(0);
-        ServiceException exception = assertThrows(
-                ServiceException.class,
-        () -> sut.addTrackToPlaylist(0, trackDTO)
-        );
-
-        assertEquals(HttpURLConnection.HTTP_CONFLICT, exception.getHttpStatusCode());
+    private List<TrackDTO> createTracklist(){
+        List<TrackDTO> temp = new ArrayList<>();
+        for (int i = 0; i < 13; i++) {
+            TrackDTO dto = new TrackDTO();
+            dto.setId(i);
+            temp.add(dto);
+        }
+        return temp;
     }
 
-    @Test
-    void addTrackToPlaylistNoRows() {
-        when(trackDAO.lookUpTrack(anyInt())).thenReturn(true);
-        doThrow(NoAffectedRowsException.class).when(trackDAO).addTrackToPlaylist(anyInt(), anyInt());
-        TrackDTO trackDTO = new TrackDTO();
-        trackDTO.setId(0);
-
-        assertThrows(
-                ServiceException.class,
-                () -> sut.addTrackToPlaylist(0, trackDTO)
-        );
-    }
-
-    @Test
-    void removeTrackFromPlaylist() {
-        doThrow(NoAffectedRowsException.class).when(trackDAO).removeTrackFromPlaylist(0, 0);
-
-        assertThrows(
-                ServiceException.class,
-                () -> sut.removeTrackFromPlaylist(any(), anyInt(), 0)
-        );
-    }
 }

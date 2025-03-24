@@ -13,5 +13,5 @@ public interface ITrackService {
 
     void addTrackToPlaylist(int id, TrackDTO trackDTO) throws ServiceException;
 
-    void removeTrackFromPlaylist(AuthenticatedUserDTO authUser, int id, int trackId);
+    void removeTrackFromPlaylist(AuthenticatedUserDTO authUser, int playlistId, int trackId);
 }

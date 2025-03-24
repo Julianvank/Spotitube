@@ -17,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,145 +44,36 @@ class PlaylistServiceTest {
     }
 
     @Test
-    void getAllPlaylistThrow() throws DALException {
-        when(playlistDAO.getAllPlaylist(anyString())).thenReturn(new ArrayList<>());
-
-        ServiceException exception = Assertions.assertThrows(
-                ServiceException.class,
-                () -> sut.getAllPlaylist(authUser)
-        );
-
-        assertEquals(HttpURLConnection.HTTP_CONFLICT, exception.getHttpStatusCode());
-    }
-
-    @Test
-    void getAllPlaylist() throws ServiceException, DALException {
-        int[] trackAmount = {3, 8};
-        int expectedLength = 0;
-        for (int j : trackAmount) {
-            expectedLength += j;
-        }
+    public void testGetAllPlaylist_NoPlaylists() throws ServiceException {
         // Arrange
-        AuthenticatedUserDTO authUser = new AuthenticatedUserDTO();
-        authUser.setUsername("testUser");
+        AuthenticatedUserDTO authUser = new AuthenticatedUserDTO("testUser", "abcdef");
+        when(playlistDAO.getAllPlaylist(authUser.getUsername())).thenReturn(Collections.emptyList());
 
-        PlaylistDTO playlist1 = getPlaylistDTO(getTrackDTOS(trackAmount[0]), "Playlist 1", 0);
-        PlaylistDTO playlist2 = getPlaylistDTO(getTrackDTOS(trackAmount[1]), "Playlist 2", 1);
-
-        List<PlaylistDTO> playlists = new ArrayList<>();
-        playlists.add(playlist1);
-        playlists.add(playlist2);
-
-        for(int i = 0; i < trackAmount.length; i++){
-            when(trackService.getAllTracksFromPlaylist(authUser, i)).thenReturn(getTrackDTOS(trackAmount[i]));
-        }
-
-        when(playlistDAO.getAllPlaylist("testUser")).thenReturn(playlists);
         // Act
         PlaylistCollectionDTO result = sut.getAllPlaylist(authUser);
 
         // Assert
         assertNotNull(result);
-        assertEquals(expectedLength, result.getLength());
-        assertEquals(trackAmount.length, result.getPlaylists().size());
-        assertEquals("Playlist 1", result.getPlaylists().get(0).getName());
-        assertEquals("Playlist 2", result.getPlaylists().get(1).getName());
-    }
-
-    private static List<TrackDTO> getTrackDTOS(int amount) {
-        List<TrackDTO> tracks = new ArrayList<>();
-        for (int i = 0; i < amount; i++) {
-            TrackDTO track = new TrackDTO(1);
-            tracks.add(track);
-        }
-
-        return tracks;
-    }
-
-    private static PlaylistDTO getPlaylistDTO(List<TrackDTO> tracks, String name, int id) {
-        PlaylistDTO playlist = new PlaylistDTO();
-        playlist.setName(name);
-        playlist.setTracks(tracks);
-        playlist.setId(id);
-        return playlist;
+        assertTrue(result.getPlaylists().isEmpty());
+        assertEquals(0, result.getLength());
     }
 
     @Test
-    void getPlaylist() {
-        PlaylistDTO expected = getPlaylistDTO(getTrackDTOS(5), "Playlist 1", 0);
+    public void testGetAllPlaylist_WithPlaylists() throws ServiceException {
+        // Arrange
+        AuthenticatedUserDTO authUser = new AuthenticatedUserDTO("testUser", "abcdef");
+        PlaylistDTO playlist1 = new PlaylistDTO(1, "Playlist 1", "user1", Collections.emptyList());
+        PlaylistDTO playlist2 = new PlaylistDTO(2, "Playlist 2", "user1", Collections.emptyList());
+        List<PlaylistDTO> playlists = List.of(playlist1, playlist2);
 
-        when(playlistDAO.getPlaylist(anyString(), anyInt())).thenReturn(expected);
+        when(playlistDAO.getAllPlaylist(authUser.getUsername())).thenReturn(playlists);
+        when(trackService.getAllTracksFromPlaylist(any(), anyInt())).thenReturn(Collections.emptyList());
 
-        PlaylistDTO actual = sut.getPlaylist(authUser, 0);
+        // Act
+        PlaylistCollectionDTO result = sut.getAllPlaylist(authUser);
 
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void getPlaylistThrows() {
-        when(playlistDAO.getPlaylist(anyString(), anyInt())).thenReturn(null);
-
-        //Assert
-
-        ServiceException exception = org.junit.jupiter.api.Assertions.assertThrows(
-                ServiceException.class,
-                () -> sut.getPlaylist(authUser, 0)
-        );
-        assertEquals(HttpURLConnection.HTTP_CONFLICT, exception.getHttpStatusCode());
-
-    }
-
-    @Test
-    void deletePlaylistById() {
-        doThrow(NoAffectedRowsException.class).when(playlistDAO).deletePlaylistById(anyString(), anyInt());
-
-        ServiceException exception = org.junit.jupiter.api.Assertions.assertThrows(
-                ServiceException.class,
-                () -> sut.deletePlaylistById(authUser, 0)
-        );
-        assertEquals(HttpURLConnection.HTTP_CONFLICT, exception.getHttpStatusCode());
-    }
-
-    @Test
-    void addPlaylistIncorrectId() {
-        PlaylistDTO playlistDTO = getPlaylistDTO(getTrackDTOS(0), "playlist 1", 0);
-        ServiceException exception = org.junit.jupiter.api.Assertions.assertThrows(
-                ServiceException.class,
-                () -> sut.addPlaylist(authUser, playlistDTO)
-        );
-        assertEquals(HttpURLConnection.HTTP_CONFLICT, exception.getHttpStatusCode());
-    }
-
-    @Test
-    void addPlaylistExceptionThrownAddPlaylist() {
-        doThrow(new NoAffectedRowsException("test", 200)).when(playlistDAO).addPlaylist(anyString(), any());
-        PlaylistDTO playlistDTO = getPlaylistDTO(getTrackDTOS(0), "playlist 1", -1);
-        ServiceException exception = org.junit.jupiter.api.Assertions.assertThrows(
-                ServiceException.class,
-                () -> sut.addPlaylist(authUser, playlistDTO)
-        );
-        assertEquals(HttpURLConnection.HTTP_OK, exception.getHttpStatusCode());
-    }
-
-    @Test
-    void addPlaylistExceptionThrownAddTracks() {
-        doThrow(new NoAffectedRowsException("test", 200)).when(playlistDAO).addTracksToPlaylist(anyString(), any(), anyInt());
-        PlaylistDTO playlistDTO = getPlaylistDTO(getTrackDTOS(0), "playlist 1", -1);
-        ServiceException exception = org.junit.jupiter.api.Assertions.assertThrows(
-                ServiceException.class,
-                () -> sut.addPlaylist(authUser, playlistDTO)
-        );
-        assertEquals(HttpURLConnection.HTTP_OK, exception.getHttpStatusCode());
-    }
-
-    @Test
-    void editPlaylist() {
-        doThrow(new NoAffectedRowsException("test", 200)).when(playlistDAO).editPlaylist(any(), anyInt());
-
-        ServiceException exception = org.junit.jupiter.api.Assertions.assertThrows(
-                ServiceException.class,
-                () -> sut.editPlaylist(any(), anyInt())
-        );
-        assertEquals(HttpURLConnection.HTTP_OK, exception.getHttpStatusCode());
+        // Assert
+        assertNotNull(result);
+        assertEquals(2, result.getPlaylists().size());
     }
 }

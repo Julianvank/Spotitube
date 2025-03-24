@@ -37,7 +37,7 @@ public class TokenService implements ITokenService{
 
     @Override
     public AuthenticatedUserDTO generateAuthenticatedUserDTO(UserDTO userDTO) {
-        AuthenticatedUserDTO authDTO = new AuthenticatedUserDTO(userDTO.getUsername(), tokenFactory.generateToken());
+        AuthenticatedUserDTO authDTO = new AuthenticatedUserDTO(userDTO.getUser(), tokenFactory.generateToken());
 
         tokenDAO.saveAuthenticatedUser(authDTO);
         return authDTO;

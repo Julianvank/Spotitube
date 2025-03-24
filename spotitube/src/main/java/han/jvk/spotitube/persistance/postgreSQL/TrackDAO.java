@@ -23,6 +23,17 @@ public class TrackDAO extends DatabaseConnector implements ITrackDAO {
         final String query = "SELECT t.id, t.title, t.performer, t.duration, t.album, t.playcount, t.publication_date, t.description, t.offline_available\n" +
                 "FROM tracksinplaylist tip LEFT JOIN public.tracks t on t.id = tip.track_id\n" +
                 "WHERE playlist_id = ?;";
+        return getTrackDTOS(id, query);
+    }
+
+    @Override
+    public List<TrackDTO> getAvailableTracks(int id) throws DALException {
+        final String query = "SELECT t.id, t.title, t.performer, t.duration, t.album, t.playcount, t.publication_date, t.description, t.offline_available " +
+                "FROM tracks t RIGHT OUTER JOIN tracksinplaylist tip on t.id = tip.track_id where tip.playlist_id != ?";
+        return getTrackDTOS(id, query);
+    }
+
+    private List<TrackDTO> getTrackDTOS(int id, String query) {
         List<TrackDTO> tracks = new ArrayList<>();
 
         try (Connection conn = connect()) {
@@ -31,29 +42,6 @@ public class TrackDAO extends DatabaseConnector implements ITrackDAO {
             stmt.setInt(1, id);
 
             ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                TrackDTO track = trackMapper.mapResultSetToTrackDTO(rs);
-                tracks.add(track);
-            }
-
-            return tracks;
-
-        } catch (SQLException e) {
-            throw new DALException("A problem was found while fulfilling the database request.", e);
-        }
-    }
-
-    @Override
-    public List<TrackDTO> getAvailableTracks(int id) throws DALException {
-        final String query = "SELECT t.id, t.title, t.performer, t.duration, t.album, t.playcount, t.publication_date, t.description, t.offline_available " +
-                "FROM tracks t RIGHT OUTER JOIN tracksinplaylist tip on t.id = tip.track_id where t.OFFLINE_AVAILABLE = true";
-        List<TrackDTO> tracks = new ArrayList<>();
-
-        try (Connection conn = connect()) {
-            Statement stmt = conn.createStatement();
-
-            ResultSet rs = stmt.executeQuery(query);
 
             while (rs.next()) {
                 TrackDTO track = trackMapper.mapResultSetToTrackDTO(rs);
@@ -71,7 +59,7 @@ public class TrackDAO extends DatabaseConnector implements ITrackDAO {
         final String query = "INSERT INTO tracksInPlaylist (TRACK_ID, PLAYLIST_ID)\n" +
                 "VALUES (?, ?)";
 
-        executeQuery(playlistId, trackId, query);
+        executeQuery(trackId, playlistId, query);
     }
 
     @Override
@@ -90,7 +78,7 @@ public class TrackDAO extends DatabaseConnector implements ITrackDAO {
 
 
             int affectedRows = stmt.executeUpdate();
-            if (affectedRows == 0) throw new NoAffectedRowsException("No rows were affected.", 200);
+//            if (affectedRows == 0) throw new NoAffectedRowsException("No rows were affected.", 200);
 
         } catch (SQLException e) {
             throw new DALException("A problem was found while fulfilling the database request.", e);

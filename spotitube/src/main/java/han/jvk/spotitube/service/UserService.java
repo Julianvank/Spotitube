@@ -9,11 +9,10 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.net.HttpURLConnection;
+import java.util.Objects;
 
 @ApplicationScoped
 public class UserService implements IUserService {
-
-
     private ITokenService tokenService;
     private IUserDAO userDAO;
 
@@ -35,7 +34,7 @@ public class UserService implements IUserService {
 
     private void authenticate(UserDTO userDTO) throws ServiceException {
         try {
-            if (!userDTO.getPassword().equals(userDAO.getPasswordByUser(userDTO.getUsername()))) {
+            if (!Objects.equals(userDTO.getPassword(), userDAO.getPasswordByUser(userDTO.getUser()))) {
                 throw new ServiceException("invalid login info.", HttpURLConnection.HTTP_FORBIDDEN);
             }
         } catch (DALException e) {
