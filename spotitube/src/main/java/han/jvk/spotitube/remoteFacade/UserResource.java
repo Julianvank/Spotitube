@@ -13,8 +13,6 @@ import jakarta.ws.rs.core.Response;
 
 @Path("/login")
 public class UserResource {
-
-    private CORSFilter corsFilter;
     private IUserService userService;
 
     @POST
@@ -26,13 +24,8 @@ public class UserResource {
         return Response.ok(response).build();
     }
 
-
     @Inject
     public void setUserService(IUserService userService) {
         this.userService = userService;
     }
-
-    @Inject
-    public void setCorsFilter(CORSFilter corsFilter){this.corsFilter = corsFilter;}
-
 }

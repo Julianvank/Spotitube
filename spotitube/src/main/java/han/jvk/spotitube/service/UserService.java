@@ -34,7 +34,7 @@ public class UserService implements IUserService {
 
     private void authenticate(UserDTO userDTO) throws ServiceException {
         try {
-            if (!Objects.equals(userDTO.getPassword(), userDAO.getPasswordByUser(userDTO.getUser()))) {
+            if (!userDTO.getPassword().equals(userDAO.getPasswordByUser(userDTO.getUser()))) {
                 throw new ServiceException("invalid login info.", HttpURLConnection.HTTP_FORBIDDEN);
             }
         } catch (DALException e) {

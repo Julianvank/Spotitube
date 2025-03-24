@@ -9,9 +9,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.jboss.logging.Logger;
 
-@Path("/health")
+@Path("")
 public class HealthResource {
-
     private static final Logger log = Logger.getLogger(HealthResource.class.getName());
 
     private IDBConnectionFactory connector;
@@ -24,10 +23,7 @@ public class HealthResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public Response checkHealth(){
-        log.info("Health check succefully reached!");
         return Response.ok("Hello World").build();}
-
-
 
     @Path("/change")
     @POST

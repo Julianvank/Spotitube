@@ -35,10 +35,10 @@ class UserServiceTest {
     }
 
     @Test
-    void testGetUserToken_Success() throws DALException, ServiceException {
+    void getUserTokenTest_Success() throws DALException, ServiceException {
         // Arrange
         UserDTO user = new UserDTO("username", "password", 1);
-        AuthenticatedUserDTO expectedAuthenticatedUserDTO = new AuthenticatedUserDTO("username", "token");
+        AuthenticatedUserDTO expected = new AuthenticatedUserDTO("username", "token");
 
         when(userDAO.getPasswordByUser("username")).thenReturn("password");
         when(tokenService.generateAuthenticatedUserDTO(any(UserDTO.class))).thenReturn(expectedAuthenticatedUserDTO);
@@ -47,7 +47,7 @@ class UserServiceTest {
         AuthenticatedUserDTO result = userService.getUserToken(user);
 
         // Assert
-        assertEquals(expectedAuthenticatedUserDTO, result);
+        assertEquals(expected, result);
         verify(userDAO).getPasswordByUser("username");
         verify(tokenService).generateAuthenticatedUserDTO(user);
     }
