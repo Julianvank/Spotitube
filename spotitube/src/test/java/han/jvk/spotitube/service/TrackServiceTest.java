@@ -27,29 +27,14 @@ import static org.mockito.Mockito.when;
 class TrackServiceTest {
 
     @InjectMocks
-    TrackService sut;
+    ITrackService sut;
 
     @Mock
-    ITrackDAO trackDAO;
+    ITrackDAO trackDaoMock;
 
-    private List<TrackDTO> trackListHelper;
-    @BeforeEach
-    void setUp() {
-        this.sut = new TrackService();
-        this.trackListHelper = new ArrayList<>();
-        trackListHelper.addAll(createTracklist());
-
+    TrackServiceTest(){
         MockitoAnnotations.openMocks(this);
     }
 
-    private List<TrackDTO> createTracklist(){
-        List<TrackDTO> temp = new ArrayList<>();
-        for (int i = 0; i < 13; i++) {
-            TrackDTO dto = new TrackDTO();
-            dto.setId(i);
-            temp.add(dto);
-        }
-        return temp;
-    }
 
 }
