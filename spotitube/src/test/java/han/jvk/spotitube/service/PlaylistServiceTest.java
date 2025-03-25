@@ -97,4 +97,41 @@ class PlaylistServiceTest {
         //Arrange
         verify(playlistDAO).deletePlaylistById(anyString(), anyInt());
     }
+
+    @Test
+    void deletePlaylistTest_ErrorEncountered(){
+        //Arrange
+        doThrow(new NoAffectedRowsException("test Error"))
+                .when(playlistDAO).deletePlaylistById(anyString(), anyInt());
+
+        //Act & Assert
+        assertThrows(ServiceException.class,
+                () -> sut.deletePlaylistById(authUser, 1));
+
+    }
+
+    @Test
+    void addPlaylist_NoErrorEncountered(){
+        //Arrange
+        PlaylistDTO playlist = new PlaylistDTO(-1, "Playlist 1", "user1", Collections.emptyList());
+        //Act
+        sut.addPlaylist(authUser, playlist);
+        //Assert
+        verify(playlistDAO).addPlaylist(anyString(), any());
+        verify(playlistDAO).addTracksToPlaylist(anyString(), any(), anyInt());
+    }
+
+    @Test
+    void addPlaylistTest_NoAffectedRowsExceptionEncountered(){
+        //Arrange
+        PlaylistDTO playlist = new PlaylistDTO(-1, "Playlist 1", "user1", Collections.emptyList());
+        doThrow(new NoAffectedRowsException("test Error"))
+                .when(playlistDAO).addPlaylist(anyString(), any());
+
+        //Act & Assert
+        ServiceException exception = assertThrows(ServiceException.class,
+                () -> sut.addPlaylist(authUser, playlist));
+        assertEquals(204, exception.getHttpStatusCode());
+    }
+
 }

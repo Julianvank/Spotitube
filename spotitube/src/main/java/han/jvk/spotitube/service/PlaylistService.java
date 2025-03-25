@@ -66,20 +66,23 @@ public class PlaylistService implements IPlaylistService {
             playlistDAO.deletePlaylistById(authUser.getUsername(), id);
         } catch (NoAffectedRowsException e) {
             log.info("There were no rows to remove");
-            throw new ServiceException("Encountered exception: " + e.getMessage(), 204);
+            throw new ServiceException("Encountered exception: " + e.getMessage(), e.getHttpStatusCode());
         }
     }
 
     @Override
     public void addPlaylist(AuthenticatedUserDTO authUser, PlaylistDTO playlistDTO) throws ServiceException {
-        if (playlistDTO.getId() != -1)
+        if (playlistDTO.getId() != -1){
             log.info("Incorrect id of playlist");
+            throw new ServiceException("Incorrect playlistId", 400);
+        }
 
         try {
             playlistDAO.addPlaylist(authUser.getUsername(), playlistDTO);
             playlistDAO.addTracksToPlaylist(authUser.getUsername(), playlistDTO.getTracks(), playlistDTO.getId());
         } catch (NoAffectedRowsException e) {
             log.info("There were no rows to add");
+            throw new ServiceException("Encountered exception: " + e.getMessage(), 204);
         }
     }
 

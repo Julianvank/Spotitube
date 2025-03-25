@@ -5,5 +5,8 @@ public class NoAffectedRowsException extends APIException {
         super(message, httpStatusCode);
     }
 
+    public NoAffectedRowsException(String message){
+        super(message, 204);
+    }
 
 }
