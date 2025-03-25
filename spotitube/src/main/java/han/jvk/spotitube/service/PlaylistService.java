@@ -92,6 +92,7 @@ public class PlaylistService implements IPlaylistService {
             playlistDAO.editPlaylist(playlistDTO, id);
         } catch (NoAffectedRowsException e) {
             log.info("There were no rows to edit");
+            throw new ServiceException("Encountered exception: " + e.getMessage(), 204);
         }
     }
 

@@ -134,4 +134,27 @@ class PlaylistServiceTest {
         assertEquals(204, exception.getHttpStatusCode());
     }
 
+
+    @Test
+    void editPlaylistTest_NoErrorEncountered(){
+        //Arrange
+        PlaylistDTO playlist = new PlaylistDTO(1, "Playlist 1", "user1", Collections.emptyList());
+        //Act
+        sut.editPlaylist(playlist, 1);
+        //Assert
+        verify(playlistDAO).editPlaylist(any(), anyInt());
+    }
+
+    @Test
+    void editPlaylistTest_EncounteredNoRowsAffectedException(){
+        //Assert
+        PlaylistDTO playlist = new PlaylistDTO(1, "Playlist 1", "user1", Collections.emptyList());
+        doThrow(new NoAffectedRowsException("test Error"))
+                .when(playlistDAO).editPlaylist(any(), anyInt());
+
+        //Act & Assert
+        ServiceException exception = assertThrows(ServiceException.class,
+                () -> sut.editPlaylist(playlist, 1));
+        assertEquals(204, exception.getHttpStatusCode());
+    }
 }
