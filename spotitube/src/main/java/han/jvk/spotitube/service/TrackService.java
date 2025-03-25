@@ -25,9 +25,7 @@ public class TrackService implements ITrackService {
 
     @Override
     public List<TrackDTO> getAllTracksFromPlaylist(AuthenticatedUserDTO authUser, int id) {
-        List<TrackDTO> list = trackDAO.getAllTracksInPlaylist(id);
-        if (list.isEmpty()) log.info("Playlist contains no tracks: " + id);
-        return list;
+        return trackDAO.getAllTracksInPlaylist(id);
     }
 
     @Override

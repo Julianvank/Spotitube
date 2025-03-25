@@ -21,8 +21,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class TrackServiceTest {
 
@@ -32,9 +31,20 @@ class TrackServiceTest {
     @Mock
     ITrackDAO trackDaoMock;
 
+    AuthenticatedUserDTO authUser = new AuthenticatedUserDTO("username", "token");
+
     TrackServiceTest(){
+        sut = new TrackService();
         MockitoAnnotations.openMocks(this);
     }
 
+    @Test
+    void getAllTracksFromPlaylistTest_NoErrorEncountered(){
+        //Act
+        sut.getAllTracksFromPlaylist(authUser, 1);
+
+        //Assert
+        verify(trackDaoMock).getAllTracksInPlaylist(anyInt());
+    }
 
 }
