@@ -4,18 +4,15 @@ import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.PlaylistCollectionDTO;
 import han.jvk.spotitube.dto.PlaylistDTO;
 import han.jvk.spotitube.dto.TrackDTO;
-import han.jvk.spotitube.exception.DALException;
 import han.jvk.spotitube.exception.NoAffectedRowsException;
 import han.jvk.spotitube.exception.ServiceException;
 import han.jvk.spotitube.persistance.IPlaylistDAO;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +26,7 @@ class PlaylistServiceTest {
     @Mock
     IPlaylistDAO playlistDAO;
     @Mock
-    ITrackService trackService;
+    ITrackService trackServiceMock;
 
     @InjectMocks
     PlaylistService sut;
@@ -67,7 +64,7 @@ class PlaylistServiceTest {
         List<PlaylistDTO> playlists = List.of(playlist1, playlist2);
 
         when(playlistDAO.getAllPlaylist(authUser.getUsername())).thenReturn(playlists);
-        when(trackService.getAllTracksFromPlaylist(any(), anyInt())).thenReturn(Collections.emptyList());
+        when(trackServiceMock.getAllTracksFromPlaylist(any(), anyInt())).thenReturn(Collections.emptyList());
 
         // Act
         PlaylistCollectionDTO result = sut.getAllPlaylist(authUser);
@@ -156,5 +153,40 @@ class PlaylistServiceTest {
         ServiceException exception = assertThrows(ServiceException.class,
                 () -> sut.editPlaylist(playlist, 1));
         assertEquals(204, exception.getHttpStatusCode());
+    }
+
+    @Test
+    void getAllPlaylist_setsCorrectLength(){
+        // Arrange
+        int expectedLength = 750;
+
+        TrackDTO track1 = new TrackDTO(1, "Track 1", "Artist 1", 200, "Album 1", 100, "2021-01-01", "Description 1", true);
+        TrackDTO track2 = new TrackDTO(2, "Track 2", "Artist 2", 300, "Album 2", 150, "2021-01-02", "Description 2", false);
+        TrackDTO track3 = new TrackDTO(3, "Track 3", "Artist 3", 250, "Album 3", 200, "2021-01-03", "Description 3", true);
+
+        List<TrackDTO> tracks1 = new ArrayList<>();
+        tracks1.add(track1);
+        tracks1.add(track2);
+
+        List<TrackDTO> tracks2 = new ArrayList<>();
+        tracks2.add(track3);
+
+        PlaylistDTO playlist1 = new PlaylistDTO(1, "Playlist 1", "Owner 1", tracks1);
+        PlaylistDTO playlist2 = new PlaylistDTO(2, "Playlist 2", "Owner 2", tracks2);
+
+        List<PlaylistDTO> playlists = new ArrayList<>();
+        playlists.add(playlist1);
+        playlists.add(playlist2);
+
+        when(playlistDAO.getAllPlaylist(anyString())).thenReturn(playlists);
+        when(trackServiceMock.getAllTracksFromPlaylist(authUser, 1))
+                .thenReturn(tracks1);
+        when(trackServiceMock.getAllTracksFromPlaylist(authUser, 2))
+                .thenReturn(tracks2);
+        // Act
+        PlaylistCollectionDTO actual = sut.getAllPlaylist(authUser);
+
+        // Assert
+        assertEquals(expectedLength, actual.getLength());
     }
 }
