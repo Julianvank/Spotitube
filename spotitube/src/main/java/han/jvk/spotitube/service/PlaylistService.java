@@ -66,6 +66,7 @@ public class PlaylistService implements IPlaylistService {
             playlistDAO.deletePlaylistById(authUser.getUsername(), id);
         } catch (NoAffectedRowsException e) {
             log.info("There were no rows to remove");
+            throw new ServiceException("Encountered exception: " + e.getMessage(), 204);
         }
     }
 

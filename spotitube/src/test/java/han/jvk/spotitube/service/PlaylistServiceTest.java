@@ -76,4 +76,25 @@ class PlaylistServiceTest {
         assertNotNull(result);
         assertEquals(2, result.getPlaylists().size());
     }
+
+    @Test
+    void getPlaylistTest_findPlaylist(){
+        //Arrange
+        PlaylistDTO playlist = new PlaylistDTO(1, "Playlist 1", "user1", Collections.emptyList());
+        when(playlistDAO.getPlaylist(any(), anyInt()))
+                .thenReturn(playlist);
+
+        //Act
+        PlaylistDTO actual = sut.getPlaylist(authUser, 1);
+        //Assert
+        assertNotNull(actual);
+    }
+
+    @Test
+    void deletePlayListTest_noErrorEncountered(){
+        //Act
+        sut.deletePlaylistById(authUser, 1);
+        //Arrange
+        verify(playlistDAO).deletePlaylistById(anyString(), anyInt());
+    }
 }

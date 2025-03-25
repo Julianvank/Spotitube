@@ -28,13 +28,15 @@ public class UserService implements IUserService {
 
     @Override
     public AuthenticatedUserDTO getUserToken(UserDTO userDTO) throws ServiceException {
+
         authenticate(userDTO);
         return tokenService.generateAuthenticatedUserDTO(userDTO);
     }
 
     private void authenticate(UserDTO userDTO) throws ServiceException {
         try {
-            if (!userDTO.getPassword().equals(userDAO.getPasswordByUser(userDTO.getUser()))) {
+            String passwordByUser = userDAO.getPasswordByUser(userDTO.getUser());
+            if (!userDTO.getPassword().equals(passwordByUser)) {
                 throw new ServiceException("invalid login info.", HttpURLConnection.HTTP_FORBIDDEN);
             }
         } catch (DALException e) {

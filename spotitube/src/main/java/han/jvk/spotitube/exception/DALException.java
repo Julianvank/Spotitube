@@ -9,6 +9,10 @@ public class DALException extends APIException {
 
     private static final Logger log = Logger.getLogger(TokenRequiredResource.class.getName());
 
+    public DALException(String message){
+        super(message);
+    }
+
     public DALException(String message, Throwable cause) {
         super(message, cause);
         log.fatal(message, cause);

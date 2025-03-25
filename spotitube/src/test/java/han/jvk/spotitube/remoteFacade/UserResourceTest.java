@@ -2,44 +2,63 @@ package han.jvk.spotitube.remoteFacade;
 
 import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.UserDTO;
-import han.jvk.spotitube.exception.APIException;
+import han.jvk.spotitube.exception.DALException;
 import han.jvk.spotitube.exception.ServiceException;
-import han.jvk.spotitube.service.IUserService;
+import han.jvk.spotitube.service.UserService;
+import han.jvk.spotitube.util.ServiceExceptionMapper;
+import jakarta.ws.rs.core.Response;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.internal.matchers.Any;
 
-import java.net.HttpURLConnection;
+import static  org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 class UserResourceTest {
 
-    @Test
-    void loginUserTrue() throws APIException {
-        UserResource sut = new UserResource();
-        IUserService serviceMock = mock(IUserService.class);
+    @Mock
+    private UserService userServiceMock;
 
-        UserDTO testUser = new UserDTO("test", "test", 1);
-        AuthenticatedUserDTO authUser = new AuthenticatedUserDTO("username", "token");
+    @InjectMocks
+    private UserResource sut;
 
-        when(serviceMock.getUserToken(any())).thenReturn(authUser);
-        sut.setUserService(serviceMock);
-
-        int result = sut.loginUser(testUser).getStatus();
-
-        assertEquals(200, result);
+    @BeforeEach
+    public void setUp() {
+        this.sut = new UserResource();
+        openMocks(this);
     }
 
     @Test
-    void loginUserThrows() throws APIException {
-        UserResource sut = new UserResource();
-        IUserService serviceMock = mock(IUserService.class);
+    void loginUserTest_success(){
+        //Arrange
+        UserDTO input = new UserDTO("testUser", "testPassword", 1);
+        AuthenticatedUserDTO expectedUser = new AuthenticatedUserDTO("testUser", "token");
+        int expected = 200;
 
-        UserDTO testUser = new UserDTO("test", "test", 1);
-
-        when(serviceMock.getUserToken(testUser)).thenThrow(new ServiceException("invalid login", HttpURLConnection.HTTP_BAD_REQUEST));
-        sut.setUserService(serviceMock);
-
-        assertThrows(APIException.class, () -> sut.loginUser(testUser).getStatus());
+        when(userServiceMock.getUserToken(any())).thenReturn(expectedUser);
+        //Act
+        Response actual = sut.loginUser(input);
+        //Assert
+        assertEquals(expected, actual.getStatus());
+        assertNotNull(actual.getEntity());
     }
+
+    @Test
+    void loginUserTest_NoFoundUser(){
+        //Arrange
+        UserDTO input = new UserDTO("testUser", "testPassword", 1);
+        int expected = 401;
+
+        when(userServiceMock.getUserToken(any())).thenReturn(null);
+        //Act
+        Response actual = sut.loginUser(input);
+        //Assert
+        assertEquals(expected, actual.getStatus());
+        assertNull(actual.getEntity());
+    }
+
 }

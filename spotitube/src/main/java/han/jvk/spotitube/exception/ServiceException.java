@@ -10,6 +10,10 @@ public class ServiceException extends APIException {
         super(message, httpStatusCode);
     }
 
+    public ServiceException(String message){
+        super(message);
+    }
+
     public ServiceException(String message, APIException cause) {
         super(message, cause);
     }

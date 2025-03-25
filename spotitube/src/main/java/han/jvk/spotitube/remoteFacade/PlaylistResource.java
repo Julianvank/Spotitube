@@ -1,6 +1,7 @@
 package han.jvk.spotitube.remoteFacade;
 
 import han.jvk.spotitube.dto.AuthenticatedUserDTO;
+import han.jvk.spotitube.dto.PlaylistCollectionDTO;
 import han.jvk.spotitube.dto.PlaylistDTO;
 import han.jvk.spotitube.dto.TrackDTO;
 import han.jvk.spotitube.exception.APIException;
@@ -99,7 +100,10 @@ public class PlaylistResource extends TokenRequiredResource {
 
 
     private Response getAllPlaylistResponse(AuthenticatedUserDTO authUser) throws APIException {
-        return Response.ok(playlistService.getAllPlaylist(authUser)).build();
+        PlaylistCollectionDTO playlists =playlistService.getAllPlaylist(authUser);
+        if(playlists == null)
+            return Response.status(204).build();
+        return Response.ok(playlists).build();
     }
 
     private Response getAllTracksResponse(int id, AuthenticatedUserDTO authUser) {

@@ -41,7 +41,7 @@ class UserServiceTest {
         AuthenticatedUserDTO expected = new AuthenticatedUserDTO("username", "token");
 
         when(userDAO.getPasswordByUser("username")).thenReturn("password");
-        when(tokenService.generateAuthenticatedUserDTO(any(UserDTO.class))).thenReturn(expectedAuthenticatedUserDTO);
+        when(tokenService.generateAuthenticatedUserDTO(any(UserDTO.class))).thenReturn(expected);
 
         // Act
         AuthenticatedUserDTO result = userService.getUserToken(user);

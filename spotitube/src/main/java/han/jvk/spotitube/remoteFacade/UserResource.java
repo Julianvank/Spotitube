@@ -4,6 +4,7 @@ import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.UserDTO;
 import han.jvk.spotitube.exception.APIException;
 import han.jvk.spotitube.filters.CORSFilter;
+import han.jvk.spotitube.remoteFacade.responses.JsonResponse;
 import han.jvk.spotitube.remoteFacade.responses.LogInUserResponse;
 import han.jvk.spotitube.service.IUserService;
 import jakarta.inject.*;
@@ -20,8 +21,14 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response loginUser(UserDTO user) throws APIException {
         AuthenticatedUserDTO authUser = userService.getUserToken(user);
+
+        if(authUser == null){
+            return Response.status(401).build();
+        }
+
         LogInUserResponse response = new LogInUserResponse(authUser.getToken(), authUser.getUsername());
         return Response.ok(response).build();
+
     }
 
     @Inject
