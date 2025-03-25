@@ -131,6 +131,17 @@ class PlaylistServiceTest {
         assertEquals(204, exception.getHttpStatusCode());
     }
 
+    @Test
+    void addPlaylistTest_IncorrectPlaylistId(){
+        PlaylistDTO playlist = new PlaylistDTO(1, "Playlist 1", "user1", Collections.emptyList());
+
+
+        //Act & Assert
+        ServiceException exception = assertThrows(ServiceException.class,
+                () -> sut.addPlaylist(authUser, playlist));
+        assertEquals(400, exception.getHttpStatusCode());
+    }
+
 
     @Test
     void editPlaylistTest_NoErrorEncountered(){
