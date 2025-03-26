@@ -68,4 +68,17 @@ class TrackServiceTest {
         //Assert
         verify(trackDaoMock).addTrackToPlaylist(anyInt(), anyInt());
     }
+
+    @Test
+    void addTrackToPlaylistTest_TrackNotInDatabase() {
+        //Arrange
+        TrackDTO trackDTO = new TrackDTO();
+        when(trackDaoMock.lookUpTrack(anyInt())).thenReturn(false);
+
+        //Act
+        sut.addTrackToPlaylist(1, trackDTO);
+
+        //Assert
+        verify(trackDaoMock, never()).addTrackToPlaylist(anyInt(), anyInt());
+    }
 }
