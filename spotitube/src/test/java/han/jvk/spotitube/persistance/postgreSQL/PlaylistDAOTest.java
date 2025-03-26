@@ -97,4 +97,30 @@ class PlaylistDAOTest {
         //Act & Assert
         assertThrows(DALException.class, () -> sut.getPlaylist(input, 1));
     }
+
+    @Test
+    void deletePlaylistByIdTest_SuccessfulExecution() throws SQLException {
+        //Arrange
+        String input = "testOwner";
+        int id = 1;
+        //Act
+        sut.deletePlaylistById(input, id);
+
+        //Assert
+        verify(mockPrepStatement, times(2)).executeUpdate();
+        verify(mockPrepStatement, times(2)).setInt(1, id);
+    }
+
+    @Test
+    void deletePlaylistByIdTest_SQLException() throws SQLException {
+        //Arrange
+        String input = "testOwner";
+        int id = 0;
+        doThrow(new SQLException()).when(mockPrepStatement).executeUpdate();
+
+        //Act & Assert
+        assertThrows(DALException.class, () -> sut.deletePlaylistById(input, id));
+    }
+
+
 }
