@@ -39,21 +39,22 @@ public class TokenDAO extends DatabaseConnector implements ITokenDAO {
 
     @Override
     public void saveAuthenticatedUser(AuthenticatedUserDTO authUser) {
-        final String query = "UPDATE users SET token = ? WHERE username like ?";
 
         try (Connection conn = connect()) {
-            PreparedStatement stmt = conn.prepareStatement(query);
+            PreparedStatement stmt = conn.prepareStatement(UPDATE_USER_TOKEN_QUERY);
 
             stmt.setString(1, authUser.getToken());
             stmt.setString(2, authUser.getUsername());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new DALException("A problem was found while fulfilling the database request.", e);
+            throw new DALException("A problem was found while fulfilling the database request.");
         }
     }
 
     private static final String FIND_USER_BY_TOKEN_QUERY = "SELECT username\n" +
             "    FROM users\n" +
             "        WHERE token = ?;";
+
+    private static final String UPDATE_USER_TOKEN_QUERY = "UPDATE users SET token = ? WHERE username like ?";
 }

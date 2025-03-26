@@ -30,7 +30,7 @@ public class UserDAO extends DatabaseConnector implements IUserDAO {
             }
 
         } catch (SQLException e) {
-            throw new DALException("A problem was found while fulfilling the database request.", e);
+            throw new DALException("A problem was found while fulfilling the database request.");
         }
         return password;
     }
