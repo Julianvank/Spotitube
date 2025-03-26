@@ -12,22 +12,21 @@ import java.sql.SQLException;
 
 @ApplicationScoped
 public class UserDAO extends DatabaseConnector implements IUserDAO {
+    private static final String GET_PASSWORD_QUERY = "SELECT password FROM users WHERE username = ?";
 
 
     @Override
     public String getPasswordByUser(String username) throws DALException {
-        final String query = "SELECT password FROM users WHERE username = ?";
         String password = "";
-
         try (Connection conn = connect()) {
-            PreparedStatement stmt = conn.prepareStatement(query);
+            PreparedStatement stmt = conn.prepareStatement(GET_PASSWORD_QUERY);
 
             stmt.setString(1, username);
 
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                password = rs.getString(1);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    password = rs.getString(1);
+                }
             }
 
         } catch (SQLException e) {

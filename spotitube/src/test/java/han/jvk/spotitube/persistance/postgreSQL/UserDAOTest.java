@@ -86,7 +86,7 @@ class UserDAOTest {
         when(mockStatement.executeQuery()).thenThrow(new SQLException());
 
         //Act & Assert
-        Exception exception = assertThrows(
+        assertThrows(
                 DALException.class,
                 () -> sut.getPasswordByUser("testUser")
         );
