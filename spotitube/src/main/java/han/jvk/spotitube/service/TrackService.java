@@ -34,20 +34,17 @@ public class TrackService implements ITrackService {
     }
 
     @Override
-    public void addTrackToPlaylist(int id, TrackDTO trackDTO) throws ServiceException {
-        try {
-            if (!trackDAO.lookUpTrack(trackDTO.getId()))
-                log.info("Track is not in database");
-            trackDAO.addTrackToPlaylist(trackDTO.getId(), id);
-        } catch (NoAffectedRowsException e) {
-            log.info("There were no rows added to database");
+    public void addTrackToPlaylist(int playlistId, TrackDTO track) throws ServiceException {
+        if (!trackDAO.lookUpTrack(track.getId())) {
+            return;
         }
+        trackDAO.addTrackToPlaylist(track.getId(), playlistId);
     }
 
     @Override
     public void removeTrackFromPlaylist(AuthenticatedUserDTO authUser, int playlistId, int trackId) {
 //        try {
-            trackDAO.removeTrackFromPlaylist(trackId, playlistId);
+        trackDAO.removeTrackFromPlaylist(trackId, playlistId);
 //        } catch (NoAffectedRowsException e) {
 //            log.info("There was no track to delete");
 //        }
