@@ -22,8 +22,4 @@ public class DALException extends APIException {
         super(cause);
         log.fatal(cause);
     }
-
-    public DALException(String s, SQLException e, int httpInternalError) {
-        super(s, e, httpInternalError);
-    }
 }
