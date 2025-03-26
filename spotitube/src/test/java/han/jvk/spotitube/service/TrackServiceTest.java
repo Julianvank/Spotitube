@@ -33,13 +33,13 @@ class TrackServiceTest {
 
     AuthenticatedUserDTO authUser = new AuthenticatedUserDTO("username", "token");
 
-    TrackServiceTest(){
+    TrackServiceTest() {
         sut = new TrackService();
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void getAllTracksFromPlaylistTest_NoErrorEncountered(){
+    void getAllTracksFromPlaylistTest_NoErrorEncountered() {
         //Act
         sut.getAllTracksFromPlaylist(authUser, 1);
 
@@ -48,7 +48,7 @@ class TrackServiceTest {
     }
 
     @Test
-    void getAvailableTracksTest_NoErrorEncountered(){
+    void getAvailableTracksTest_NoErrorEncountered() {
         //Act
         sut.getAvailableTracks(1);
 
@@ -56,4 +56,16 @@ class TrackServiceTest {
         verify(trackDaoMock).getAvailableTracks(anyInt());
     }
 
+    @Test
+    void addTracksToPlaylistTest_TrackInDatabase() {
+        //Arrange
+        TrackDTO trackDTO = new TrackDTO();
+        when(trackDaoMock.lookUpTrack(anyInt())).thenReturn(true);
+
+        //Act
+        sut.addTrackToPlaylist(1, trackDTO);
+
+        //Assert
+        verify(trackDaoMock).addTrackToPlaylist(anyInt(), anyInt());
+    }
 }
