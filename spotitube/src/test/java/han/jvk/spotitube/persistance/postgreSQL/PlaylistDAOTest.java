@@ -191,4 +191,30 @@ class PlaylistDAOTest {
         //Act & Assert
         assertThrows(DALException.class, () -> sut.addTracksToPlaylist(input, tracks, playlistId));
     }
+
+    @Test
+    void editPlaylistTest_SuccessfulExecution() throws SQLException {
+        //Arrange
+        PlaylistDTO playlistDTO = new PlaylistDTO();
+        playlistDTO.setName("testPlaylist");
+        int id = 1;
+        //Act
+        sut.editPlaylist(playlistDTO, id);
+
+        //Assert
+        verify(mockPrepStatement, times(1)).executeUpdate();
+        verify(mockPrepStatement, times(1)).setString(1, playlistDTO.getName());
+        verify(mockPrepStatement, times(1)).setInt(2, id);
+    }
+
+    @Test
+    void editPlaylistTest_SQLException() throws SQLException {
+        //Arrange
+        PlaylistDTO playlistDTO = new PlaylistDTO();
+        int id = 1;
+        doThrow(new SQLException()).when(mockPrepStatement).executeUpdate();
+
+        //Act
+        assertThrows(DALException.class, () -> sut.editPlaylist(playlistDTO, id));
+    }
 }

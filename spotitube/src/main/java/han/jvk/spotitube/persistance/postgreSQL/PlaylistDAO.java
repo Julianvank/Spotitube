@@ -151,9 +151,7 @@ public class PlaylistDAO extends DatabaseConnector implements IPlaylistDAO {
             stmt.setString(1, playlistDTO.getName());
             stmt.setInt(2, id);
 
-            int affectedRows = stmt.executeUpdate();
-            if (affectedRows == 0) throw new NoAffectedRowsException("No rows were affected.", 200);
-
+            stmt.executeUpdate();
         } catch (SQLException e) {
             throw new DALException("A problem was found while fulfilling the database request.", e);
         }
