@@ -88,5 +88,37 @@ class TrackDAOTest {
         assertThrows(DALException.class, () -> sut.getAllTracksInPlaylist(playlistId));
     }
 
+    @Test
+    void lookUpTrackTest_TrackInDatabase() throws SQLException, DALException {
+        //Arrange
+        when(mockResultSet.getInt(1)).thenReturn(1);
+
+        //Act
+        boolean actual = sut.lookUpTrack(1);
+
+        //Arrange
+        assertTrue(actual);
+    }
+
+    @Test
+    void lookUpTrackTest_TrackNotInDatabase() throws SQLException, DALException {
+        //Arrange
+        when(mockResultSet.getInt(1)).thenReturn(0);
+
+        //Act
+        boolean actual = sut.lookUpTrack(1);
+
+        //Arrange
+        assertFalse(actual);
+    }
+
+    @Test
+    void lookUpTrackTest_EncounteredSqlException() throws SQLException {
+        //Arrange
+        doThrow(new SQLException()).when(mockPreparedStatement).executeQuery();
+
+        //Act
+        assertThrows(DALException.class, () -> sut.lookUpTrack(1));
+    }
 
 }

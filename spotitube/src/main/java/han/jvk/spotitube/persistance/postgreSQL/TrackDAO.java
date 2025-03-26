@@ -30,6 +30,35 @@ public class TrackDAO extends DatabaseConnector implements ITrackDAO {
         return getTrackDTOS(id, GET_AVAILABLE_TRACKS_QUERY);
     }
 
+    @Override
+    public void addTrackToPlaylist(int trackId, int playlistId) throws DALException {
+        executeQuery(trackId, playlistId, INSERT_TRACK_IN_PLAYLIST_QUERY);
+    }
+
+    @Override
+    public void removeTrackFromPlaylist(int trackId, int playlistId) throws DALException {
+        executeQuery(trackId, playlistId, DELETE_TRACK_FROM_PLAYLIST_QUERY);
+    }
+
+    @Override
+    public boolean lookUpTrack(int trackId) throws DALException {
+        try (Connection conn = connect()) {
+            PreparedStatement stmt = conn.prepareStatement(LOOKUP_TRACK_QUERY);
+
+            stmt.setInt(1, trackId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.getInt(1) > 0) {
+                    return true;
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new DALException("A problem was found while fulfilling the database request.");
+        }
+        return false;
+    }
+
     private List<TrackDTO> getTrackDTOS(int id, String query) {
         List<TrackDTO> tracks = new ArrayList<>();
 
@@ -38,39 +67,16 @@ public class TrackDAO extends DatabaseConnector implements ITrackDAO {
 
             stmt.setInt(1, id);
 
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                TrackDTO track = trackMapper.mapResultSetToTrackDTO(rs);
-                tracks.add(track);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    TrackDTO track = trackMapper.mapResultSetToTrackDTO(rs);
+                    tracks.add(track);
+                }
             }
-            return tracks;
-
-//            try(ResultSet rs = stmt.executeQuery()) {
-//                while (rs.next()) {
-//                    TrackDTO track = trackMapper.mapResultSetToTrackDTO(rs);
-//                    tracks.add(track);
-//                }
-//            }
         } catch (SQLException e) {
-            throw new DALException("A problem was found while fulfilling the database request.", e);
+            throw new DALException("Failed to retrieve tracks for playlist ID: " + id);
         }
-//        return tracks;
-    }
-
-    @Override
-    public void addTrackToPlaylist(int trackId, int playlistId) throws DALException {
-        final String query = "INSERT INTO tracksInPlaylist (TRACK_ID, PLAYLIST_ID)\n" +
-                "VALUES (?, ?)";
-
-        executeQuery(trackId, playlistId, query);
-    }
-
-    @Override
-    public void removeTrackFromPlaylist(int trackId, int playlistId) throws DALException {
-        final String query = "DELETE FROM tracksInPlaylist WHERE TRACK_ID = ? AND PLAYLIST_ID = ?";
-
-        executeQuery(trackId, playlistId, query);
+        return tracks;
     }
 
     private void executeQuery(int trackId, int playlistId, String query) {
@@ -88,35 +94,6 @@ public class TrackDAO extends DatabaseConnector implements ITrackDAO {
             throw new DALException("A problem was found while fulfilling the database request.", e);
         }
     }
-
-    @Override
-    public boolean lookUpTrack(int trackId) throws DALException {
-        final String query = "SELECT COUNT(ID) FROM tracks WHERE ID = ?";
-
-        try (Connection conn = connect()) {
-            PreparedStatement stmt = conn.prepareStatement(query);
-
-            stmt.setInt(1, trackId);
-
-            ResultSet rs = stmt.executeQuery();
-            while(rs.next()) {
-                if (rs.getInt(1) > 0) {
-                    return true;
-                }
-            }
-
-        } catch (SQLException e) {
-            throw new DALException("A problem was found while fulfilling the database request.", e);
-        }
-        return false;
-    }
-
-    static final String getAllTracksInPlaylist_query = "SELECT t.id, t.title, t.performer, t.duration, t.album, t.playcount, t.publication_date, t.description, t.offline_available\n" +
-            "FROM tracksinplaylist tip LEFT JOIN public.tracks t on t.id = tip.track_id\n" +
-            "WHERE playlist_id = ?;";
-
-    static final String getAvailableTracks_query = "SELECT t.id, t.title, t.performer, t.duration, t.album, t.playcount, t.publication_date, t.description, t.offline_available " +
-            "FROM tracks t RIGHT OUTER JOIN tracksinplaylist tip on t.id = tip.track_id where tip.playlist_id != ?";
 
     private static final String GET_ALL_TRACKS_IN_PLAYLIST_QUERY = "SELECT t.id, t.title, t.performer, t.duration, t.album, t.playcount, t.publication_date, t.description, t.offline_available " +
             "FROM tracksinplaylist tip LEFT JOIN public.tracks t on t.id = tip.track_id " +
