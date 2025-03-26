@@ -108,6 +108,7 @@ public class PlaylistDAO extends DatabaseConnector implements IPlaylistDAO {
             if (affectedRows == 0)
                 throw new NoAffectedRowsException("No rows were affected.", HttpURLConnection.HTTP_OK);
 
+            //TODO check of dit iets doet
             assignId(playlistDTO, stmt);
 
         } catch (SQLException e) {
@@ -120,8 +121,6 @@ public class PlaylistDAO extends DatabaseConnector implements IPlaylistDAO {
             if (generatedKeys.next()) {
                 int id = generatedKeys.getInt(1);
                 playlistDTO.setId(id);
-            } else {
-                throw new SQLException("No ID obtained.");
             }
         }
     }

@@ -42,6 +42,8 @@ class PlaylistDAOTest {
 
         when(connector.getConnection()).thenReturn(mockConnection);
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockPrepStatement);
+//        when(mockConnection.prepareStatement(anyString(), anyInt())).thenReturn(mockPrepStatement);
+        when(mockConnection.prepareStatement(anyString(), eq(Statement.RETURN_GENERATED_KEYS))).thenReturn(mockPrepStatement);
         when(mockConnection.createStatement()).thenReturn(mockStatement);
         when(mockPrepStatement.executeQuery()).thenReturn(mockResultSet);
         when(mockStatement.executeQuery(anyString())).thenReturn(mockResultSet);
@@ -122,5 +124,35 @@ class PlaylistDAOTest {
         assertThrows(DALException.class, () -> sut.deletePlaylistById(input, id));
     }
 
+    @Test
+    void addPlaylistTest_SuccessfulExecution() throws SQLException {
+        //Arrange
+        String input = "testOwner";
+        PlaylistDTO playlistDTO = new PlaylistDTO();
+        playlistDTO.setName("testPlaylist");
+        when(mockPrepStatement.executeUpdate()).thenReturn(1);
+        when(mockPrepStatement.getGeneratedKeys()).thenReturn(mockResultSet);
+        when(mockResultSet.next()).thenReturn(true);
+        when(mockResultSet.getInt(1)).thenReturn(1);
+
+        //Act
+        sut.addPlaylist(input, playlistDTO);
+
+        //Arrange
+        verify(mockPrepStatement).setString(1, playlistDTO.getName());
+        verify(mockPrepStatement).setString(2, input);
+        verify(mockPrepStatement).executeUpdate();
+    }
+
+    @Test
+    void addPlayListTest_SqlException() throws SQLException {
+        //Arrange
+        String input = "testOwner";
+        PlaylistDTO playlistDTO = new PlaylistDTO();
+        doThrow(new SQLException()).when(mockPrepStatement).executeUpdate();
+
+        //Arrange & Act
+        assertThrows(DALException.class, () -> sut.addPlaylist(input, playlistDTO));
+    }
 
 }
