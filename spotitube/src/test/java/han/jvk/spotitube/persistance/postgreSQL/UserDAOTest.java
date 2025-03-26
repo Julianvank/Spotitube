@@ -15,35 +15,39 @@ import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class UserDAOTest {
 
     @InjectMocks
     UserDAO sut;
+
     @Mock
     Connection mockConnection;
+
     @Mock
     PreparedStatement mockStatement;
+
     @Mock
     ResultSet mockResultSet;
+
     @Mock
     IDBConnectionFactory connector;
 
     @BeforeEach
     void setUp() throws SQLException {
-        this.sut = new UserDAO();
-        sut.setConnector(connector);
-
         MockitoAnnotations.openMocks(this);
 
         when(connector.getConnection()).thenReturn(mockConnection);
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
+
+//        sut.setConnector(connector);
     }
 
     @Test
-    void getPasswordByUser() throws SQLException {
+    void getPasswordByUserTest_NoErrorEncountered() throws SQLException {
         String username = "testUser";
         String expectedPassword = "testPassword";
 
@@ -55,6 +59,8 @@ class UserDAOTest {
 
         // Assert
         assertEquals(expectedPassword, actualPassword);
+        verify(mockStatement).setString(1, username);
+        verify(mockStatement).executeQuery();
     }
 
     @Test
