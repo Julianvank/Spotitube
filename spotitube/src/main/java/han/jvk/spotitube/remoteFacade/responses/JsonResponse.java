@@ -1,7 +1,5 @@
 package han.jvk.spotitube.remoteFacade.responses;
 
-import jakarta.ws.rs.core.Response;
-
 public class JsonResponse <AnyResponse> {
     AnyResponse value;
     int statusCode;

@@ -4,10 +4,9 @@ import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.PlaylistCollectionDTO;
 import han.jvk.spotitube.dto.PlaylistDTO;
 import han.jvk.spotitube.dto.TrackDTO;
-import han.jvk.spotitube.exception.APIException;
-import han.jvk.spotitube.service.*;
+import han.jvk.spotitube.service.IPlaylistService;
+import han.jvk.spotitube.service.ITokenService;
 import jakarta.ws.rs.core.Response;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -18,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
 
 class PlaylistResourceTest {
 

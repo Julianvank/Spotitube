@@ -2,11 +2,9 @@ package han.jvk.spotitube.service;
 
 import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.UserDTO;
-import han.jvk.spotitube.exception.NoAffectedRowsException;
 import han.jvk.spotitube.exception.ServiceException;
 import han.jvk.spotitube.persistance.ITokenDAO;
 import han.jvk.spotitube.util.factory.Token.ITokenFactory;
-import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,9 +13,8 @@ import org.mockito.MockitoAnnotations;
 
 import java.net.HttpURLConnection;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 class TokenServiceTest {

@@ -1,7 +1,6 @@
 package han.jvk.spotitube.util.factory.DBConnection;
 
 import han.jvk.spotitube.exception.UtilException;
-import han.jvk.spotitube.remoteFacade.HealthResource;
 import han.jvk.spotitube.util.DBPropertiesReader;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.jboss.logging.Logger;

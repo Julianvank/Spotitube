@@ -9,7 +9,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.net.HttpURLConnection;
-import java.util.Objects;
 
 @ApplicationScoped
 public class UserService implements IUserService {

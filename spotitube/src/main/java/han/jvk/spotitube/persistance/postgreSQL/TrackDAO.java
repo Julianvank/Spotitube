@@ -2,13 +2,15 @@ package han.jvk.spotitube.persistance.postgreSQL;
 
 import han.jvk.spotitube.dto.TrackDTO;
 import han.jvk.spotitube.exception.DALException;
-import han.jvk.spotitube.exception.NoAffectedRowsException;
 import han.jvk.spotitube.persistance.DatabaseConnector;
 import han.jvk.spotitube.persistance.ITrackDAO;
 import han.jvk.spotitube.persistance.dataMapper.TrackMapper;
 import jakarta.enterprise.context.ApplicationScoped;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 

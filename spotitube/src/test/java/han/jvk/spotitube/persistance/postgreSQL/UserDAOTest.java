@@ -1,7 +1,6 @@
 package han.jvk.spotitube.persistance.postgreSQL;
 
 import han.jvk.spotitube.exception.DALException;
-import han.jvk.spotitube.persistance.DatabaseConnector;
 import han.jvk.spotitube.util.factory.DBConnection.IDBConnectionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

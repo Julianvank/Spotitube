@@ -3,12 +3,13 @@ package han.jvk.spotitube.remoteFacade;
 import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.dto.UserDTO;
 import han.jvk.spotitube.exception.APIException;
-import han.jvk.spotitube.filters.CORSFilter;
-import han.jvk.spotitube.remoteFacade.responses.JsonResponse;
 import han.jvk.spotitube.remoteFacade.responses.LogInUserResponse;
 import han.jvk.spotitube.service.IUserService;
-import jakarta.inject.*;
-import jakarta.ws.rs.*;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 

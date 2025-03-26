@@ -1,11 +1,9 @@
 package han.jvk.spotitube;
 
 //import han.jvk.spotitube.util.ServiceExceptionMapper;
+
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @ApplicationPath("")
 public class ApiApplication extends Application {
