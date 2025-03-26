@@ -18,26 +18,6 @@ import java.util.List;
 public class PlaylistDAO extends DatabaseConnector implements IPlaylistDAO {
     PlaylistMapper playlistMapper = new PlaylistMapper();
 
-    private static final String GET_ALL_PLAYLIST_QUERY = "SELECT *\n" +
-            "FROM playlists\n" +
-            "WHERE owner = (select id FROM users where username = ? ) ORDER BY id";
-
-    private static final String GET_PLAYLIST_QUERY = "SELECT id, name, ((SELECT name FROM users WHERE name LIKE ?)) AS owner\n" +
-            "FROM playlists\n" +
-            "WHERE id = ?";
-
-    private static final String DELETE_TRACKS_IN_PLAYLIST_QUERY = "DELETE FROM tracksInPlaylist\n" +
-            "WHERE PLAYLIST_ID = ?";
-
-    private static final String DELETE_PLAYLIST_QUERY = "DELETE FROM playlists\n" +
-            "WHERE ID = ?";
-
-    private static final String INSERT_PLAYLIST_QUERY = "INSERT INTO playlists (NAME, OWNER)\n" +
-            "VALUES (?, (SELECT id from users where username = ?));";
-
-    private static final String INSERT_TRACKS_IN_PLAYLIST_QUERY = "INSERT INTO tracksInPlaylist (TRACK_ID, PLAYLIST_ID)\n" +
-            "VALUES (?, ?);";
-
     @Override
     public List<PlaylistDTO> getAllPlaylist(String owner) throws DALException {
         List<PlaylistDTO> list = new ArrayList<>();
@@ -86,7 +66,7 @@ public class PlaylistDAO extends DatabaseConnector implements IPlaylistDAO {
             executeQuery(conn, DELETE_TRACKS_IN_PLAYLIST_QUERY, id);
             executeQuery(conn, DELETE_PLAYLIST_QUERY, id);
         } catch (SQLException e) {
-            throw new DALException("A problem was found while fulfilling the database request.", e);
+            throw new DALException("A problem was found while fulfilling the database request.");
         }
     }
 
@@ -111,7 +91,7 @@ public class PlaylistDAO extends DatabaseConnector implements IPlaylistDAO {
             assignId(playlistDTO, stmt);
 
         } catch (SQLException e) {
-            throw new DALException("A problem was found while fulfilling the database request.", e);
+            throw new DALException("A problem was found while fulfilling the database request.");
         }
     }
 
@@ -143,18 +123,38 @@ public class PlaylistDAO extends DatabaseConnector implements IPlaylistDAO {
 
     @Override
     public void editPlaylist(PlaylistDTO playlistDTO, int id) throws DALException {
-        final String query = "UPDATE playlists SET name = ? WHERE ID = ?";
 
         try (Connection conn = connect()) {
-            PreparedStatement stmt = conn.prepareStatement(query);
+            PreparedStatement stmt = conn.prepareStatement(UPDATE_PLAYLIST_QUERY);
 
             stmt.setString(1, playlistDTO.getName());
             stmt.setInt(2, id);
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new DALException("A problem was found while fulfilling the database request.", e);
+            throw new DALException("A problem was found while fulfilling the database request.");
         }
-
     }
+
+    private static final String GET_ALL_PLAYLIST_QUERY = "SELECT *\n" +
+            "FROM playlists\n" +
+            "WHERE owner = (select id FROM users where username = ? ) ORDER BY id";
+
+    private static final String GET_PLAYLIST_QUERY = "SELECT id, name, ((SELECT name FROM users WHERE name LIKE ?)) AS owner\n" +
+            "FROM playlists\n" +
+            "WHERE id = ?";
+
+    private static final String DELETE_TRACKS_IN_PLAYLIST_QUERY = "DELETE FROM tracksInPlaylist\n" +
+            "WHERE PLAYLIST_ID = ?";
+
+    private static final String DELETE_PLAYLIST_QUERY = "DELETE FROM playlists\n" +
+            "WHERE ID = ?";
+
+    private static final String INSERT_PLAYLIST_QUERY = "INSERT INTO playlists (NAME, OWNER)\n" +
+            "VALUES (?, (SELECT id from users where username = ?));";
+
+    private static final String INSERT_TRACKS_IN_PLAYLIST_QUERY = "INSERT INTO tracksInPlaylist (TRACK_ID, PLAYLIST_ID)\n" +
+            "VALUES (?, ?);";
+
+    private static final String UPDATE_PLAYLIST_QUERY = "UPDATE playlists SET name = ? WHERE ID = ?";
 }
