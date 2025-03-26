@@ -48,6 +48,7 @@ class UserDAOTest {
 
     @Test
     void getPasswordByUserTest_NoErrorEncountered() throws SQLException {
+        //Arrange
         String username = "testUser";
         String expectedPassword = "testPassword";
 
