@@ -27,7 +27,7 @@ public class UserDAO extends DatabaseConnector implements IUserDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                return rs.getString(1);
+                password = rs.getString(1);
             }
 
         } catch (SQLException e) {

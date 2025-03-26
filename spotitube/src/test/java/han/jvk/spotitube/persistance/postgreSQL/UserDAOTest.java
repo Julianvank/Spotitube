@@ -70,7 +70,7 @@ class UserDAOTest {
         String username = "wrongUserName";
         String expected = "";
 
-        when(mockResultSet.next()).thenReturn(true);
+        when(mockResultSet.next()).thenReturn(false);
         // Act
         String actualPassword = sut.getPasswordByUser(username);
 
