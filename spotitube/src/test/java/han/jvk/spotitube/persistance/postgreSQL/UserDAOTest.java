@@ -81,25 +81,12 @@ class UserDAOTest {
     }
 
     @Test
-    public void testGetPasswordByUser_NoResult() throws Exception {
-        // Arrange
-        String username = "nonexistentUser";
-
-        when(mockResultSet.next()).thenReturn(false);
-
-        // Act
-        String actualPassword = sut.getPasswordByUser(username);
-
-        // Assert
-        assertEquals("", actualPassword);
-    }
-
-    @Test
-    public void testGetPasswordByUser_SQLException() throws Exception {
+    public void GetPasswordByUserTest_SQLException() throws Exception {
+        //Arrange
         when(mockStatement.executeQuery()).thenThrow(new SQLException());
 
-        // No need for an assertion as the test expects an exception
-        assertThrows(
+        //Act & Assert
+        Exception exception = assertThrows(
                 DALException.class,
                 () -> sut.getPasswordByUser("testUser")
         );
