@@ -35,6 +35,9 @@ public class PlaylistDAO extends DatabaseConnector implements IPlaylistDAO {
     private static final String INSERT_PLAYLIST_QUERY = "INSERT INTO playlists (NAME, OWNER)\n" +
             "VALUES (?, (SELECT id from users where username = ?));";
 
+    private static final String INSERT_TRACKS_IN_PLAYLIST_QUERY = "INSERT INTO tracksInPlaylist (TRACK_ID, PLAYLIST_ID)\n" +
+            "VALUES (?, ?);";
+
     @Override
     public List<PlaylistDTO> getAllPlaylist(String owner) throws DALException {
         List<PlaylistDTO> list = new ArrayList<>();
@@ -121,13 +124,12 @@ public class PlaylistDAO extends DatabaseConnector implements IPlaylistDAO {
         }
     }
 
+
     @Override
     public void addTracksToPlaylist(String username, List<TrackDTO> tracks, int playlistId) throws DALException {
-        final String trackQuery = "INSERT INTO tracksInPlaylist (TRACK_ID, PLAYLIST_ID)\n" +
-                "VALUES (?, ?);";
         try (Connection conn = connect()) {
             for (TrackDTO track : tracks) {
-                PreparedStatement stmt = conn.prepareStatement(trackQuery);
+                PreparedStatement stmt = conn.prepareStatement(INSERT_TRACKS_IN_PLAYLIST_QUERY);
 
                 stmt.setInt(1, track.getId());
                 stmt.setInt(2, playlistId);
