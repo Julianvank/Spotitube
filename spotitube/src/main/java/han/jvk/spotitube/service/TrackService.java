@@ -30,9 +30,7 @@ public class TrackService implements ITrackService {
 
     @Override
     public List<TrackDTO> getAvailableTracks(int id) {
-        List<TrackDTO> list = trackDAO.getAvailableTracks(id);
-        if (list.isEmpty()) log.info("No available tracks on: " + id);
-        return list;
+        return trackDAO.getAvailableTracks(id);
     }
 
     @Override
