@@ -22,6 +22,10 @@ public class PlaylistDAO extends DatabaseConnector implements IPlaylistDAO {
             "FROM playlists\n" +
             "WHERE owner = (select id FROM users where username = ? ) ORDER BY id";
 
+    private static final String GET_PLAYLIST_QUERY = "SELECT id, name, ((SELECT name FROM users WHERE name LIKE ?)) AS owner\n" +
+            "FROM playlists\n" +
+            "WHERE id = ?";
+
     @Override
     public List<PlaylistDTO> getAllPlaylist(String owner) throws DALException {
         List<PlaylistDTO> list = new ArrayList<>();
@@ -44,27 +48,23 @@ public class PlaylistDAO extends DatabaseConnector implements IPlaylistDAO {
 
     @Override
     public PlaylistDTO getPlaylist(String authUsername, int id) throws DALException {
-        final String query = "SELECT id, name, ((SELECT name FROM users WHERE name LIKE ?)) AS owner\n" +
-                "FROM playlists\n" +
-                "WHERE id = ?";
-
         PlaylistDTO playlist = null;
+
         try (Connection conn = connect()) {
-            PreparedStatement stmt = conn.prepareStatement(query);
+            PreparedStatement stmt = conn.prepareStatement(GET_PLAYLIST_QUERY);
 
             stmt.setString(1, authUsername);
             stmt.setString(2, String.valueOf(id));
 
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                playlist = playlistMapper.mapResultSetToPlaylistDTO(rs);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    playlist = playlistMapper.mapResultSetToPlaylistDTO(rs);
+                }
             }
-
-            return playlist;
         } catch (SQLException e) {
-            throw new DALException("A problem was found while fulfilling the database request.", e);
+            throw new DALException("A problem was found while fulfilling the database request.");
         }
+        return playlist;
     }
 
     @Override
