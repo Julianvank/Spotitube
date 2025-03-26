@@ -13,8 +13,7 @@ import org.mockito.MockitoAnnotations;
 import java.sql.*;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -71,5 +70,31 @@ class PlaylistDAOTest {
 
         //Act  Assert
         assertThrows(DALException.class, () -> sut.getAllPlaylist(input));
+    }
+
+    @Test
+    void getPlaylistTest_SuccessfulExecution() throws SQLException {
+        //Arrange
+        String input = "testOwner";
+        when(mockPlaylistMapper.mapResultSetToPlaylistDTO(any())).thenReturn(new PlaylistDTO());
+        when(mockResultSet.next()).thenReturn(true);
+
+        //Act
+        PlaylistDTO actual = sut.getPlaylist(input, 1);
+
+        //Assert
+        assertNotNull(actual);
+        verify(mockPrepStatement).setString(1, input);
+        verify(mockPrepStatement).setString(2, "1");
+    }
+
+    @Test
+    void getPlaylistTest_SQLException() throws SQLException {
+        //Arrange
+        String input = "testOwner";
+        when(mockPrepStatement.executeQuery()).thenThrow(new SQLException());
+
+        //Act & Assert
+        assertThrows(DALException.class, () -> sut.getPlaylist(input, 1));
     }
 }
