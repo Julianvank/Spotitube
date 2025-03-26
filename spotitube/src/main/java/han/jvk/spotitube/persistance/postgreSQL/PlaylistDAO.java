@@ -26,6 +26,12 @@ public class PlaylistDAO extends DatabaseConnector implements IPlaylistDAO {
             "FROM playlists\n" +
             "WHERE id = ?";
 
+    private static final String DELETE_TRACKS_IN_PLAYLIST_QUERY = "DELETE FROM tracksInPlaylist\n" +
+            "WHERE PLAYLIST_ID = ?";
+
+    private static final String DELETE_PLAYLIST_QUERY = "DELETE FROM playlists\n" +
+            "WHERE ID = ?";
+
     @Override
     public List<PlaylistDTO> getAllPlaylist(String owner) throws DALException {
         List<PlaylistDTO> list = new ArrayList<>();
@@ -67,27 +73,24 @@ public class PlaylistDAO extends DatabaseConnector implements IPlaylistDAO {
         return playlist;
     }
 
+
     @Override
     public void deletePlaylistById(String username, int id) throws DALException {
-        final String query1 = "DELETE FROM tracksInPlaylist\n" +
-                "WHERE PLAYLIST_ID = ?";
-        final String query2 = "DELETE FROM playlists\n" +
-                "WHERE ID = ?";
-
         try (Connection conn = connect()) {
-            PreparedStatement stmt1 = conn.prepareStatement(query1);
-            stmt1.setInt(1, id);
-            stmt1.executeUpdate();
-
-            PreparedStatement stmt2 = conn.prepareStatement(query2);
-            stmt2.setInt(1, id);
-            stmt2.executeUpdate();
-
-
+            executeQuery(conn, DELETE_TRACKS_IN_PLAYLIST_QUERY, id);
+            executeQuery(conn, DELETE_PLAYLIST_QUERY, id);
         } catch (SQLException e) {
             throw new DALException("A problem was found while fulfilling the database request.", e);
         }
     }
+
+    private void executeQuery(Connection conn, String query, int id) throws SQLException {
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        }
+    }
+
 
     @Override
     public void addPlaylist(String username, PlaylistDTO playlistDTO) throws DALException {
