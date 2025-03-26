@@ -42,8 +42,6 @@ class UserDAOTest {
         when(connector.getConnection()).thenReturn(mockConnection);
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
-
-//        sut.setConnector(connector);
     }
 
     @Test
