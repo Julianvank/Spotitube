@@ -81,4 +81,12 @@ class TrackServiceTest {
         //Assert
         verify(trackDaoMock, never()).addTrackToPlaylist(anyInt(), anyInt());
     }
+
+    @Test
+    void removeTrackFromPlaylistTest_NoErrorEncountered(){
+        //Act
+        sut.removeTrackFromPlaylist(authUser, 1, 1);
+        //Assert
+        verify(trackDaoMock).removeTrackFromPlaylist(anyInt(), anyInt());
+    }
 }

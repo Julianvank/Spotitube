@@ -43,10 +43,6 @@ public class TrackService implements ITrackService {
 
     @Override
     public void removeTrackFromPlaylist(AuthenticatedUserDTO authUser, int playlistId, int trackId) {
-//        try {
         trackDAO.removeTrackFromPlaylist(trackId, playlistId);
-//        } catch (NoAffectedRowsException e) {
-//            log.info("There was no track to delete");
-//        }
     }
 }
