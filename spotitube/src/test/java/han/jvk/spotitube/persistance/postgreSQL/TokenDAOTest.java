@@ -1,5 +1,6 @@
 package han.jvk.spotitube.persistance.postgreSQL;
 
+import han.jvk.spotitube.dto.AuthenticatedUserDTO;
 import han.jvk.spotitube.exception.DALException;
 import han.jvk.spotitube.persistance.ITokenDAO;
 import han.jvk.spotitube.persistance.dataMapper.PlaylistMapper;
@@ -15,8 +16,7 @@ import java.sql.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class TokenDAOTest {
 
@@ -85,6 +85,27 @@ class TokenDAOTest {
     }
 
     @Test
-    void saveAuthenticatedUser() {
+    void saveAuthenticatedUserTest_Success() throws SQLException {
+        //Arrange
+        AuthenticatedUserDTO authUser = new AuthenticatedUserDTO("username", "token");
+
+        //Act
+        sut.saveAuthenticatedUser(authUser);
+
+        //Assert
+        verify(mockPrepStatement, times(1)).executeUpdate();
+        verify(mockPrepStatement, times(1)).setString(1, authUser.getToken());
+        verify(mockPrepStatement, times(1)).setString(2, authUser.getUsername());
+    }
+
+    @Test
+    void saveAuthenticatedUserTest_SqlException() throws SQLException {
+        //Arrange
+        AuthenticatedUserDTO authUser = new AuthenticatedUserDTO("username", "token");
+        doThrow(new SQLException()).when(mockPrepStatement).executeUpdate();
+
+        //Act & Assert
+        assertThrows(DALException.class, () -> sut.saveAuthenticatedUser(authUser));
+
     }
 }

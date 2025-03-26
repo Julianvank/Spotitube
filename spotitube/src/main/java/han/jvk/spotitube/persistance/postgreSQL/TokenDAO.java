@@ -47,10 +47,7 @@ public class TokenDAO extends DatabaseConnector implements ITokenDAO {
             stmt.setString(1, authUser.getToken());
             stmt.setString(2, authUser.getUsername());
 
-
-            int affectedRows = stmt.executeUpdate();
-            if (affectedRows == 0) throw new NoAffectedRowsException("No rows were affected.", 200);
-
+            stmt.executeUpdate();
         } catch (SQLException e) {
             throw new DALException("A problem was found while fulfilling the database request.", e);
         }
