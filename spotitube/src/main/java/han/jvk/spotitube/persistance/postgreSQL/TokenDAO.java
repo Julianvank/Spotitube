@@ -17,8 +17,6 @@ import java.util.Map;
 @ApplicationScoped
 public class TokenDAO extends DatabaseConnector implements ITokenDAO {
 
-    private static final Map<String, String> userTokenStorage = new HashMap<>();
-
     @Override
     public String findUserByToken(String token) throws DALException {
         final String query = "SELECT username\n" +
