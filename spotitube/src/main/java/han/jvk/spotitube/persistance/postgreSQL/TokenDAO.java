@@ -19,29 +19,23 @@ public class TokenDAO extends DatabaseConnector implements ITokenDAO {
 
     @Override
     public String findUserByToken(String token) throws DALException {
-        final String query = "SELECT username\n" +
-                "    FROM users\n" +
-                "        WHERE token = ?;";
-
         String user = null;
 
         try (Connection conn = connect()) {
-            PreparedStatement stmt = conn.prepareStatement(query);
+            PreparedStatement stmt = conn.prepareStatement(FIND_USER_BY_TOKEN_QUERY);
 
             stmt.setString(1, token);
 
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                user = rs.getString(1);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    user = rs.getString(1);
+                }
             }
-            return user;
-
         } catch (SQLException e) {
-            throw new DALException(e);
+            throw new DALException("A problem was found while fulfilling the database request.");
         }
+        return user;
     }
-
 
     @Override
     public void saveAuthenticatedUser(AuthenticatedUserDTO authUser) {
@@ -61,4 +55,8 @@ public class TokenDAO extends DatabaseConnector implements ITokenDAO {
             throw new DALException("A problem was found while fulfilling the database request.", e);
         }
     }
+
+    private static final String FIND_USER_BY_TOKEN_QUERY = "SELECT username\n" +
+            "    FROM users\n" +
+            "        WHERE token = ?;";
 }
