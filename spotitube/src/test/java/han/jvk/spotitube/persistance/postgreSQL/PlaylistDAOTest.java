@@ -2,7 +2,7 @@ package han.jvk.spotitube.persistance.postgreSQL;
 
 import han.jvk.spotitube.dto.PlaylistDTO;
 import han.jvk.spotitube.exception.DALException;
-import han.jvk.spotitube.exception.NoAffectedRowsException;
+import han.jvk.spotitube.persistance.dataMapper.PlaylistMapper;
 import han.jvk.spotitube.util.factory.DBConnection.IDBConnectionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,13 +11,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+
 class PlaylistDAOTest {
 
     @InjectMocks
@@ -33,11 +33,13 @@ class PlaylistDAOTest {
     ResultSet mockResultSet;
     @Mock
     IDBConnectionFactory connector;
+    @Mock
+    PlaylistMapper mockPlaylistMapper;
 
 
     @BeforeEach
     void setUp() throws SQLException {
-        sut.setConnector(connector);
+//        sut.setConnector(connector);
 
         MockitoAnnotations.openMocks(this);
 
@@ -48,4 +50,28 @@ class PlaylistDAOTest {
         when(mockStatement.executeQuery(anyString())).thenReturn(mockResultSet);
     }
 
+    @Test
+    void getAllPlaylistTest_SuccessfulExecution() throws SQLException {
+        //Arrange
+        String input = "testOwner";
+        when(mockPlaylistMapper.mapResultSetToPlaylistDTO(any())).thenReturn(new PlaylistDTO());
+        when(mockResultSet.next()).thenReturn(true).thenReturn(false);
+        //Act
+        List<PlaylistDTO> actual = sut.getAllPlaylist(input);
+        //Assert
+        assertEquals(1, actual.size());
+        verify(mockPrepStatement, times(1)).executeQuery();
+        verify(mockResultSet, times(2)).next();
+        verify(mockPlaylistMapper, times(1)).mapResultSetToPlaylistDTO(mockResultSet);
+    }
+
+    @Test
+    void getAllPlaylistTest_SqlException() throws SQLException {
+        //Arrange
+        String input = "testOwner";
+        when(mockPrepStatement.executeQuery()).thenThrow(new SQLException());
+
+        //Act  Assert
+        assertThrows(DALException.class, () -> sut.getAllPlaylist(input));
+    }
 }
