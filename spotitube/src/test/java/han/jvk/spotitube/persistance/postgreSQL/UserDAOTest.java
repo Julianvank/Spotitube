@@ -65,18 +65,19 @@ class UserDAOTest {
     }
 
     @Test
-    void getPasswordByUserFalse() throws SQLException {
+    void getPasswordByUserTest_WrongUserName() throws SQLException {
+        //Arrange
         String username = "wrongUserName";
-        String expectedPassword = "testPassword";
+        String expected = "";
 
         when(mockResultSet.next()).thenReturn(true);
-        when(mockResultSet.getString(1)).thenReturn(null);
-
         // Act
         String actualPassword = sut.getPasswordByUser(username);
 
         // Assert
-        assertNotEquals(expectedPassword, actualPassword);
+        assertEquals(expected,  actualPassword);
+        verify(mockStatement).setString(1, username);
+        verify(mockStatement).executeQuery();
     }
 
     @Test
