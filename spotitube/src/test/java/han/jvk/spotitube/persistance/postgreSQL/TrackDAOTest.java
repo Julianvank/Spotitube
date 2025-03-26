@@ -89,6 +89,24 @@ class TrackDAOTest {
     }
 
     @Test
+    void getAvailableTracks_NoErrorEncountered() throws SQLException, DALException {
+        // Arrange
+        int playlistId = 1;
+        TrackDTO expectedTrack = new TrackDTO();
+        when(mockResultSet.next()).thenReturn(true).thenReturn(false);
+        when(mockTrackMapper.mapResultSetToTrackDTO(mockResultSet)).thenReturn(expectedTrack);
+
+        // Act
+        List<TrackDTO> actualTracks = sut.getAvailableTracks(playlistId);
+
+        // Assert
+        assertEquals(1, actualTracks.size());
+        assertEquals(expectedTrack, actualTracks.get(0));
+        verify(mockPreparedStatement).setInt(1, playlistId);
+        verify(mockPreparedStatement).executeQuery();
+    }
+
+    @Test
     void lookUpTrackTest_TrackInDatabase() throws SQLException, DALException {
         //Arrange
         when(mockResultSet.getInt(1)).thenReturn(1);
@@ -122,7 +140,7 @@ class TrackDAOTest {
     }
 
     @Test
-    public void AddTrackToPlaylistTest_ReachedExecuteQuery() throws DALException, SQLException {
+    public void AddTrackToPlaylistTest_ReachedExecuteQueryTrackInPlaylistByIds() throws DALException, SQLException {
         // Arrange
         int trackId = 1;
         int playlistId = 2;
@@ -146,5 +164,20 @@ class TrackDAOTest {
 
         // Act
         assertThrows(DALException.class, () -> sut.addTrackToPlaylist(trackId, playlistId));
+    }
+
+    @Test
+    public void removeTrackFromPlaylist_ReachedExecuteQueryTrackInPlaylistByIds() throws DALException, SQLException {
+        // Arrange
+        int trackId = 1;
+        int playlistId = 2;
+        when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
+        when(mockPreparedStatement.executeUpdate()).thenReturn(1);
+
+        // Act
+        sut.removeTrackFromPlaylist(trackId, playlistId);
+
+        // Assert
+        verify(mockPreparedStatement).executeUpdate();
     }
 }

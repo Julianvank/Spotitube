@@ -22,22 +22,22 @@ public class TrackDAO extends DatabaseConnector implements ITrackDAO {
 
     @Override
     public List<TrackDTO> getAllTracksInPlaylist(int id) throws DALException {
-        return getTrackDTOS(id, GET_ALL_TRACKS_IN_PLAYLIST_QUERY);
+        return getTrackListFromDatabaseById(id, GET_ALL_TRACKS_IN_PLAYLIST_QUERY);
     }
 
     @Override
     public List<TrackDTO> getAvailableTracks(int id) throws DALException {
-        return getTrackDTOS(id, GET_AVAILABLE_TRACKS_QUERY);
+        return getTrackListFromDatabaseById(id, GET_AVAILABLE_TRACKS_QUERY);
     }
 
     @Override
     public void addTrackToPlaylist(int trackId, int playlistId) throws DALException {
-        executeQuery(trackId, playlistId, INSERT_TRACK_IN_PLAYLIST_QUERY);
+        ExecuteQueryTrackInPlaylistByIds(trackId, playlistId, INSERT_TRACK_IN_PLAYLIST_QUERY);
     }
 
     @Override
     public void removeTrackFromPlaylist(int trackId, int playlistId) throws DALException {
-        executeQuery(trackId, playlistId, DELETE_TRACK_FROM_PLAYLIST_QUERY);
+        ExecuteQueryTrackInPlaylistByIds(trackId, playlistId, DELETE_TRACK_FROM_PLAYLIST_QUERY);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class TrackDAO extends DatabaseConnector implements ITrackDAO {
         return false;
     }
 
-    private List<TrackDTO> getTrackDTOS(int id, String query) {
+    private List<TrackDTO> getTrackListFromDatabaseById(int id, String query) {
         List<TrackDTO> tracks = new ArrayList<>();
 
         try (Connection conn = connect()) {
@@ -79,19 +79,16 @@ public class TrackDAO extends DatabaseConnector implements ITrackDAO {
         return tracks;
     }
 
-    private void executeQuery(int trackId, int playlistId, String query) {
+    private void ExecuteQueryTrackInPlaylistByIds(int trackId, int playlistId, String query) {
         try (Connection conn = connect()) {
             PreparedStatement stmt = conn.prepareStatement(query);
 
             stmt.setInt(1, trackId);
             stmt.setInt(2, playlistId);
 
-
-            int affectedRows = stmt.executeUpdate();
-//            if (affectedRows == 0) throw new NoAffectedRowsException("No rows were affected.", 200);
-
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new DALException("A problem was found while fulfilling the database request.", e);
+            throw new DALException("A problem was found while fulfilling the database request.");
         }
     }
 
