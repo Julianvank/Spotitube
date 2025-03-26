@@ -132,12 +132,10 @@ public class PlaylistDAO extends DatabaseConnector implements IPlaylistDAO {
                 stmt.setInt(1, track.getId());
                 stmt.setInt(2, playlistId);
 
-                int affectedRows = stmt.executeUpdate();
-                if (affectedRows == 0) throw new NoAffectedRowsException("No rows were affected.", 200);
-
+                stmt.executeUpdate();
             }
         } catch (SQLException e) {
-            throw new DALException("A problem was found while fulfilling the database request.", e);
+            throw new DALException("A problem was found while fulfilling the database request.");
         }
     }
 

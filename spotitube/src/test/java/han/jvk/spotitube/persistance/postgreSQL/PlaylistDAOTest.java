@@ -1,6 +1,7 @@
 package han.jvk.spotitube.persistance.postgreSQL;
 
 import han.jvk.spotitube.dto.PlaylistDTO;
+import han.jvk.spotitube.dto.TrackDTO;
 import han.jvk.spotitube.exception.DALException;
 import han.jvk.spotitube.persistance.dataMapper.PlaylistMapper;
 import han.jvk.spotitube.util.factory.DBConnection.IDBConnectionFactory;
@@ -11,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -154,4 +156,39 @@ class PlaylistDAOTest {
         assertThrows(DALException.class, () -> sut.addPlaylist(input, playlistDTO));
     }
 
+    @Test
+    void addTracksToPlaylistTest_SuccessfulExecution() throws SQLException {
+        //Arrange
+        String input = "testOwner";
+        List<TrackDTO> tracks = new ArrayList<>();
+        for(int i = 0; i < 3; i++){
+            TrackDTO trackDTO = new TrackDTO();
+            trackDTO.setId(i);
+            tracks.add(trackDTO);
+        }
+        int playlistId = 1;
+
+        //Act
+        sut.addTracksToPlaylist(input, tracks, playlistId);
+
+        //Assert
+        verify(mockPrepStatement, times(tracks.size())).executeUpdate();
+    }
+    
+    @Test
+    void addTracksToPlaylistTest_SqlException() throws SQLException {
+        //Arrange
+        String input = "testOwner";
+        List<TrackDTO> tracks = new ArrayList<>();
+        for(int i = 0; i < 3; i++){
+            TrackDTO trackDTO = new TrackDTO();
+            trackDTO.setId(i);
+            tracks.add(trackDTO);
+        }
+        int playlistId = 1;
+
+        doThrow(new SQLException()).when(mockPrepStatement).executeUpdate();
+        //Act & Assert
+        assertThrows(DALException.class, () -> sut.addTracksToPlaylist(input, tracks, playlistId));
+    }
 }
