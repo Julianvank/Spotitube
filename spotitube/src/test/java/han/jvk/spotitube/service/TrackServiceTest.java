@@ -47,4 +47,13 @@ class TrackServiceTest {
         verify(trackDaoMock).getAllTracksInPlaylist(anyInt());
     }
 
+    @Test
+    void getAvailableTracksTest_NoErrorEncountered(){
+        //Act
+        sut.getAvailableTracks(1);
+
+        //Assert
+        verify(trackDaoMock).getAvailableTracks(anyInt());
+    }
+
 }
