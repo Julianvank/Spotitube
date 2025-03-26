@@ -22,12 +22,12 @@ public class TrackDAO extends DatabaseConnector implements ITrackDAO {
 
     @Override
     public List<TrackDTO> getAllTracksInPlaylist(int id) throws DALException {
-        return getTrackDTOS(id, getAllTracksInPlaylist_query);
+        return getTrackDTOS(id, GET_ALL_TRACKS_IN_PLAYLIST_QUERY);
     }
 
     @Override
     public List<TrackDTO> getAvailableTracks(int id) throws DALException {
-        return getTrackDTOS(id, getAvailableTracks_query);
+        return getTrackDTOS(id, GET_AVAILABLE_TRACKS_QUERY);
     }
 
     private List<TrackDTO> getTrackDTOS(int id, String query) {
@@ -46,9 +46,16 @@ public class TrackDAO extends DatabaseConnector implements ITrackDAO {
             }
             return tracks;
 
+//            try(ResultSet rs = stmt.executeQuery()) {
+//                while (rs.next()) {
+//                    TrackDTO track = trackMapper.mapResultSetToTrackDTO(rs);
+//                    tracks.add(track);
+//                }
+//            }
         } catch (SQLException e) {
             throw new DALException("A problem was found while fulfilling the database request.", e);
         }
+//        return tracks;
     }
 
     @Override
@@ -110,4 +117,18 @@ public class TrackDAO extends DatabaseConnector implements ITrackDAO {
 
     static final String getAvailableTracks_query = "SELECT t.id, t.title, t.performer, t.duration, t.album, t.playcount, t.publication_date, t.description, t.offline_available " +
             "FROM tracks t RIGHT OUTER JOIN tracksinplaylist tip on t.id = tip.track_id where tip.playlist_id != ?";
+
+    private static final String GET_ALL_TRACKS_IN_PLAYLIST_QUERY = "SELECT t.id, t.title, t.performer, t.duration, t.album, t.playcount, t.publication_date, t.description, t.offline_available " +
+            "FROM tracksinplaylist tip LEFT JOIN public.tracks t on t.id = tip.track_id " +
+            "WHERE playlist_id = ?;";
+
+    private static final String GET_AVAILABLE_TRACKS_QUERY = "SELECT t.id, t.title, t.performer, t.duration, t.album, t.playcount, t.publication_date, t.description, t.offline_available " +
+            "FROM tracks t RIGHT OUTER JOIN tracksinplaylist tip on t.id = tip.track_id " +
+            "WHERE tip.playlist_id != ?";
+
+    private static final String INSERT_TRACK_IN_PLAYLIST_QUERY = "INSERT INTO tracksInPlaylist (TRACK_ID, PLAYLIST_ID) VALUES (?, ?)";
+    private static final String DELETE_TRACK_FROM_PLAYLIST_QUERY = "DELETE FROM tracksInPlaylist WHERE TRACK_ID = ? AND PLAYLIST_ID = ?";
+
+    private static final String LOOKUP_TRACK_QUERY = "SELECT COUNT(ID) FROM tracks WHERE ID = ?";
+
 }
