@@ -121,4 +121,30 @@ class TrackDAOTest {
         assertThrows(DALException.class, () -> sut.lookUpTrack(1));
     }
 
+    @Test
+    public void AddTrackToPlaylistTest_ReachedExecuteQuery() throws DALException, SQLException {
+        // Arrange
+        int trackId = 1;
+        int playlistId = 2;
+        when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
+        when(mockPreparedStatement.executeUpdate()).thenReturn(1);
+
+        // Act
+        sut.addTrackToPlaylist(trackId, playlistId);
+
+        // Assert
+        verify(mockPreparedStatement).executeUpdate();
+    }
+
+    @Test
+    public void AddTrackToPlaylistTest_ThrowsDALException() throws DALException, SQLException {
+        // Arrange
+        int trackId = 1;
+        int playlistId = 2;
+        when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
+        when(mockPreparedStatement.executeUpdate()).thenThrow(new SQLException("Database error"));
+
+        // Act
+        assertThrows(DALException.class, () -> sut.addTrackToPlaylist(trackId, playlistId));
+    }
 }
