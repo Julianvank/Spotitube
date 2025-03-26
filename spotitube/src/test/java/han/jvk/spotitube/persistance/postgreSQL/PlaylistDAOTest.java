@@ -39,8 +39,6 @@ class PlaylistDAOTest {
 
     @BeforeEach
     void setUp() throws SQLException {
-//        sut.setConnector(connector);
-
         MockitoAnnotations.openMocks(this);
 
         when(connector.getConnection()).thenReturn(mockConnection);
@@ -54,15 +52,15 @@ class PlaylistDAOTest {
     void getAllPlaylistTest_SuccessfulExecution() throws SQLException {
         //Arrange
         String input = "testOwner";
-        when(mockPlaylistMapper.mapResultSetToPlaylistDTO(any())).thenReturn(new PlaylistDTO());
-        when(mockResultSet.next()).thenReturn(true).thenReturn(false);
+        when(mockPlaylistMapper.mapResultSetToPlaylistDTO(any())).thenReturn(new PlaylistDTO()).thenReturn(new PlaylistDTO());
+        when(mockResultSet.next()).thenReturn(true).thenReturn(true).thenReturn(false);
         //Act
         List<PlaylistDTO> actual = sut.getAllPlaylist(input);
         //Assert
-        assertEquals(1, actual.size());
+        assertEquals(2, actual.size());
         verify(mockPrepStatement, times(1)).executeQuery();
-        verify(mockResultSet, times(2)).next();
-        verify(mockPlaylistMapper, times(1)).mapResultSetToPlaylistDTO(mockResultSet);
+        verify(mockResultSet, times(3)).next();
+        verify(mockPlaylistMapper, times(2)).mapResultSetToPlaylistDTO(mockResultSet);
     }
 
     @Test
