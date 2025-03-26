@@ -22,17 +22,12 @@ public class TrackDAO extends DatabaseConnector implements ITrackDAO {
 
     @Override
     public List<TrackDTO> getAllTracksInPlaylist(int id) throws DALException {
-        final String query = "SELECT t.id, t.title, t.performer, t.duration, t.album, t.playcount, t.publication_date, t.description, t.offline_available\n" +
-                "FROM tracksinplaylist tip LEFT JOIN public.tracks t on t.id = tip.track_id\n" +
-                "WHERE playlist_id = ?;";
-        return getTrackDTOS(id, query);
+        return getTrackDTOS(id, getAllTracksInPlaylist_query);
     }
 
     @Override
     public List<TrackDTO> getAvailableTracks(int id) throws DALException {
-        final String query = "SELECT t.id, t.title, t.performer, t.duration, t.album, t.playcount, t.publication_date, t.description, t.offline_available " +
-                "FROM tracks t RIGHT OUTER JOIN tracksinplaylist tip on t.id = tip.track_id where tip.playlist_id != ?";
-        return getTrackDTOS(id, query);
+        return getTrackDTOS(id, getAvailableTracks_query);
     }
 
     private List<TrackDTO> getTrackDTOS(int id, String query) {
@@ -108,4 +103,11 @@ public class TrackDAO extends DatabaseConnector implements ITrackDAO {
         }
         return false;
     }
+
+    static final String getAllTracksInPlaylist_query = "SELECT t.id, t.title, t.performer, t.duration, t.album, t.playcount, t.publication_date, t.description, t.offline_available\n" +
+            "FROM tracksinplaylist tip LEFT JOIN public.tracks t on t.id = tip.track_id\n" +
+            "WHERE playlist_id = ?;";
+
+    static final String getAvailableTracks_query = "SELECT t.id, t.title, t.performer, t.duration, t.album, t.playcount, t.publication_date, t.description, t.offline_available " +
+            "FROM tracks t RIGHT OUTER JOIN tracksinplaylist tip on t.id = tip.track_id where tip.playlist_id != ?";
 }
