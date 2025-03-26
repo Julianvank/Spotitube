@@ -57,7 +57,7 @@ class TrackServiceTest {
     }
 
     @Test
-    void addTracksToPlaylistTest_TrackInDatabase() {
+    void addTrackToPlaylistTest_TrackInDatabase() {
         //Arrange
         TrackDTO trackDTO = new TrackDTO();
         when(trackDaoMock.lookUpTrack(anyInt())).thenReturn(true);
