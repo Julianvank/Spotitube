@@ -130,7 +130,6 @@ class PlaylistDAOTest {
         String input = "testOwner";
         PlaylistDTO playlistDTO = new PlaylistDTO();
         playlistDTO.setName("testPlaylist");
-        when(mockPrepStatement.executeUpdate()).thenReturn(1);
         when(mockPrepStatement.getGeneratedKeys()).thenReturn(mockResultSet);
         when(mockResultSet.next()).thenReturn(true);
         when(mockResultSet.getInt(1)).thenReturn(1);

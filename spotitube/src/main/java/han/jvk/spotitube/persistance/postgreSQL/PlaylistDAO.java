@@ -32,6 +32,9 @@ public class PlaylistDAO extends DatabaseConnector implements IPlaylistDAO {
     private static final String DELETE_PLAYLIST_QUERY = "DELETE FROM playlists\n" +
             "WHERE ID = ?";
 
+    private static final String INSERT_PLAYLIST_QUERY = "INSERT INTO playlists (NAME, OWNER)\n" +
+            "VALUES (?, (SELECT id from users where username = ?));";
+
     @Override
     public List<PlaylistDTO> getAllPlaylist(String owner) throws DALException {
         List<PlaylistDTO> list = new ArrayList<>();
@@ -91,22 +94,15 @@ public class PlaylistDAO extends DatabaseConnector implements IPlaylistDAO {
         }
     }
 
-
     @Override
     public void addPlaylist(String username, PlaylistDTO playlistDTO) throws DALException {
-        final String playlistQuery = "INSERT INTO playlists (NAME, OWNER)\n" +
-                "VALUES (?, (SELECT id from users where username = ?));";
-
-
         try (Connection conn = connect()) {
-            PreparedStatement stmt = conn.prepareStatement(playlistQuery, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement stmt = conn.prepareStatement(INSERT_PLAYLIST_QUERY, Statement.RETURN_GENERATED_KEYS);
 
             stmt.setString(1, playlistDTO.getName());
             stmt.setString(2, username);
 
-            int affectedRows = stmt.executeUpdate();
-            if (affectedRows == 0)
-                throw new NoAffectedRowsException("No rows were affected.", HttpURLConnection.HTTP_OK);
+            stmt.executeUpdate();
 
             //TODO check of dit iets doet
             assignId(playlistDTO, stmt);
