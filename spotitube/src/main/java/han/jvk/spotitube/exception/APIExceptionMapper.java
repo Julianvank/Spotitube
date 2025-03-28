@@ -15,7 +15,8 @@ public class APIExceptionMapper implements ExceptionMapper<APIException> {
             statusCode = httpStatusCode;
         }
 
-        return Response.status(statusCode)
+        return Response
+                .status(statusCode)
                 .entity(new ErrorResponse(exception.getMessage(), statusCode))
                 .build();
     }

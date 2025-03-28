@@ -12,4 +12,12 @@ public class PlaylistResponse {
         this.playlists = playlists;
         this.length = length;
     }
+
+    public List<PlaylistDTO> getPlaylists() {
+        return playlists;
+    }
+
+    public int getLength() {
+        return length;
+    }
 }

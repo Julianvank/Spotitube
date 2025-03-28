@@ -42,21 +42,26 @@ public class TrackDAO extends DatabaseConnector implements ITrackDAO {
 
     @Override
     public boolean lookUpTrack(int trackId) throws DALException {
+        boolean result = false;
         try (Connection conn = connect()) {
             PreparedStatement stmt = conn.prepareStatement(LOOKUP_TRACK_QUERY);
 
             stmt.setInt(1, trackId);
 
             try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.getInt(1) > 0) {
-                    return true;
+                while (rs.next()) {
+                    int amountFound = rs.getInt(1);
+                    if (amountFound > 0) {
+                        result = true;
+                    }
+
                 }
             }
 
         } catch (SQLException e) {
             throw new DALException("A problem was found while fulfilling the database request.");
         }
-        return false;
+        return result;
     }
 
     private List<TrackDTO> getTrackListFromDatabaseById(int id, String query) {

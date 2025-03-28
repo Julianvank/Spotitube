@@ -18,4 +18,6 @@ public class TrackInPlaylistResponse {
     public void setTracks(List<TrackDTO> tracks) {
         this.tracks = tracks;
     }
+
+
 }

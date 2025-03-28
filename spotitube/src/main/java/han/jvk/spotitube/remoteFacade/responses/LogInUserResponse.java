@@ -16,4 +16,5 @@ public class LogInUserResponse {
     public String getToken() {
         return token;
     }
+    public String getUser() {return user;}
 }

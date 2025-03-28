@@ -1,4 +1,4 @@
-package han.jvk.spotitube.util;
+package han.jvk.spotitube.util.factory.Token;
 
 import han.jvk.spotitube.util.adapter.ITokenFactoryAdapter;
 import jakarta.enterprise.context.ApplicationScoped;

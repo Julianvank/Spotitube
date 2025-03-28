@@ -28,7 +28,10 @@ public class UserResource {
         }
 
         LogInUserResponse response = new LogInUserResponse(authUser.getToken(), authUser.getUsername());
-        return Response.ok(response).build();
+        return Response
+                .status(200)
+                .entity(response)
+                .build();
 
     }
 

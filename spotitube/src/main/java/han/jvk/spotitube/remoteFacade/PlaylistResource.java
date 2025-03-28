@@ -13,7 +13,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/playlists")
+@Path("/playlists/")
 public class PlaylistResource extends TokenRequiredResource {
 
     private IPlaylistService playlistService;
@@ -50,7 +50,7 @@ public class PlaylistResource extends TokenRequiredResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addPlaylist(@QueryParam("token") final String token, PlaylistDTO playlistDTO) throws APIException {
+    public Response addPlaylist(@QueryParam("token") final String token, PlaylistDTO playlistDTO) {
         AuthenticatedUserDTO authUser = createAuthUser(token);
         playlistService.addPlaylist(authUser, playlistDTO);
 
@@ -101,7 +101,7 @@ public class PlaylistResource extends TokenRequiredResource {
 
     private Response getAllPlaylistResponse(AuthenticatedUserDTO authUser) throws APIException {
         PlaylistCollectionDTO playlists =playlistService.getAllPlaylist(authUser);
-        if(playlists == null)
+        if(playlists.getPlaylists().isEmpty())
             return Response.status(204).build();
         return Response.ok(playlists).build();
     }
